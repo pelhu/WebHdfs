@@ -7,7 +7,9 @@
     "licenseUrl": "",
 
     "dependencies": {
-        "Newtonsoft.Json": "8.0.3"
+        "Newtonsoft.Json": "8.0.3",
+        "Microsoft.NETCore.Portable.Compatibility": "1.0.1-rc2-23910",
+        "System.Dynamic.Runtime": "4.0.11-rc2-23910"
     },
 
     "frameworks": {
