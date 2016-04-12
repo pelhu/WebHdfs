@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using WebHdfs.Entities;
+using System.Text;
 
 namespace WebHdfs
 {
@@ -76,7 +77,7 @@ namespace WebHdfs
         /// <param name="baseUrl">Base url of WebHdfs service.</param>
         /// <param name="user">Username to be used on each call.</param>
         public WebHdfsClient(string baseUrl, string user = null)
-            :this(new HttpClientHandler(), baseUrl, user)
+            : this(new HttpClientHandler(), baseUrl, user)
         {
         }
 
@@ -86,7 +87,7 @@ namespace WebHdfs
         /// <param name="handler">Underlying <see cref="HttpMessageHandler"/> to be used (for testing mostly).</param>
         /// <param name="baseUrl">Base url of WebHdfs service.</param>
         /// <param name="user">Username to be used on each call.</param>
-        public WebHdfsClient(HttpMessageHandler handler, string baseUrl, string user = null) 
+        public WebHdfsClient(HttpMessageHandler handler, string baseUrl, string user = null)
         {
             InnerHandler = handler;
             BaseUrl = baseUrl;
@@ -129,7 +130,7 @@ namespace WebHdfs
                 var response = await GetResponseMessageAsync(uri);
                 if (response.IsSuccessStatusCode)
                 {
-                    JObject path = await response.Content.ReadAsAsync<JObject>();
+                    JObject path = JObject.Parse(await response.Content.ReadAsStringAsync());
                     HomeDirectory = path.Value<string>("Path");
                 }
             }
@@ -186,7 +187,7 @@ namespace WebHdfs
         /// <param name="length">The number of bytes to be processed.</param>
         /// <param name="token"><see cref="CancellationToken"/> to cancel call if needed.</param>
         /// <returns>Async <see cref="Task{Stream}"/> with file content.</returns>
-        public async Task<Stream> OpenFile(string path, int offset, int length, CancellationToken token)
+        public async Task<Stream> OpenFile(string path, int offset = 0, int length = 0, CancellationToken token = default(CancellationToken))
         {
             string uri = GetUriForOperation(path) + "op=OPEN";
             if (offset > 0)
@@ -460,7 +461,7 @@ namespace WebHdfs
             if (response.IsSuccessStatusCode)
             {
 
-                var jobj = await response.Content.ReadAsAsync<JObject>();
+                var jobj = JObject.Parse(await response.Content.ReadAsStringAsync());
 
                 if (jobj == null)
                     return default(T);
@@ -489,15 +490,13 @@ namespace WebHdfs
             {
                 client.BaseAddress = new Uri(BaseUrl);
 
-                foreach (var mediaType in options.Formatter.SupportedMediaTypes)
-                {
-                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(mediaType.MediaType));
-                }
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/octet-stream"));
 
                 var request = new HttpRequestMessage(options.Method, url);
                 if (options.Method != HttpMethod.Get && data != null)
                 {
-                    request.Content = data as HttpContent ?? new ObjectContent(data.GetType(), data, options.Formatter, options.Formatter.SupportedMediaTypes.FirstOrDefault());
+                    request.Content = data as HttpContent ?? new StringContent(data.ToString(), Encoding.UTF8);
                 }
 
                 try

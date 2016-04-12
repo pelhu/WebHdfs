@@ -1,21 +1,16 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.25029.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebHdfs", "WebHdfs\WebHdfs.csproj", "{27A2083A-4C99-4A86-A230-B39475C48B1D}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{3EF13F57-0339-404F-89E4-FFD1583C4E16}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebHdfs.Test", "WebHdfs.Test\WebHdfs.Test.csproj", "{83294AF9-9EC5-459C-9393-51096D35D2AC}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{85C9D5CD-A3C7-4726-9661-1F975713A647}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4510AB02-A8F5-4AD9-9908-1F3259EDA27A}"
 	ProjectSection(SolutionItems) = preProject
-		.nuget\packages.config = .nuget\packages.config
+		global.json = global.json
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2C976662-4C1D-40A1-9D4B-1144FAFC20E0}"
-	ProjectSection(SolutionItems) = preProject
-		appveyor.yml = appveyor.yml
-	EndProjectSection
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "WebHdfs", "src\WebHdfs\WebHdfs.xproj", "{895EA6CC-FF75-445B-B0C9-5F7A08BD7434}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,16 +18,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{27A2083A-4C99-4A86-A230-B39475C48B1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{27A2083A-4C99-4A86-A230-B39475C48B1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{27A2083A-4C99-4A86-A230-B39475C48B1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{27A2083A-4C99-4A86-A230-B39475C48B1D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{83294AF9-9EC5-459C-9393-51096D35D2AC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{83294AF9-9EC5-459C-9393-51096D35D2AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{83294AF9-9EC5-459C-9393-51096D35D2AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{83294AF9-9EC5-459C-9393-51096D35D2AC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{895EA6CC-FF75-445B-B0C9-5F7A08BD7434}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{895EA6CC-FF75-445B-B0C9-5F7A08BD7434}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{895EA6CC-FF75-445B-B0C9-5F7A08BD7434}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{895EA6CC-FF75-445B-B0C9-5F7A08BD7434}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{895EA6CC-FF75-445B-B0C9-5F7A08BD7434} = {3EF13F57-0339-404F-89E4-FFD1583C4E16}
 	EndGlobalSection
 EndGlobal

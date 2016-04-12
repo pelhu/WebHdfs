@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Formatting;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,7 +20,7 @@ namespace WebHdfs
         {
             Completion = HttpCompletionOption.ResponseContentRead;
             Token = CancellationToken.None;
-            Formatter = new JsonMediaTypeFormatter();
+            //MediaType = "application/json";
             Method = HttpMethod.Get;
         }
 
@@ -37,11 +36,11 @@ namespace WebHdfs
         public CancellationToken Token
         { get; set; }
 
-        /// <summary>
-        /// Форматировщик тела запроса
-        /// </summary>
-        public MediaTypeFormatter Formatter
-        { get; set; }
+        ///// <summary>
+        ///// Форматировщик тела запроса
+        ///// </summary>
+        //public string MediaType
+        //{ get; set; }
 
         /// <summary>
         /// HTTP-метод

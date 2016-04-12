@@ -1,0 +1,25 @@
+﻿{
+    "version": "1.0.0-*",
+    "description": "WebHdfs Class Library",
+    "authors": [ "khamzatsalikhov" ],
+    "tags": [ "" ],
+    "projectUrl": "",
+    "licenseUrl": "",
+
+    "dependencies": {
+        "Newtonsoft.Json": "8.0.3"
+    },
+
+    "frameworks": {
+        "net451": {
+            "dependencies": {
+                "Microsoft.Net.Http": "2.2.22"
+            }
+        },
+        "dnxcore50": {
+            "dependencies": {
+                "NETStandard.Library": "1.0.0-rc2-23910"
+            }
+        }
+    }
+}
