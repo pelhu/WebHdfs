@@ -47,5 +47,10 @@ namespace WebHdfs
         /// </summary>
         public HttpMethod Method
         { get; set; }
+
+        /// <summary>
+        /// Additional Query Parameters
+        /// </summary>
+        public object AdditionalQueryParameters { get; set; }
     }
 }

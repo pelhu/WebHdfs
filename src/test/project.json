@@ -1,22 +1,28 @@
 ﻿{
     "version": "1.0.0-*",
-    "description": "WebHdfs Class Library",
+    "description": "test Console Application",
     "authors": [ "khamzatsalikhov" ],
     "tags": [ "" ],
     "projectUrl": "",
     "licenseUrl": "",
 
+    "compilationOptions": {
+        "emitEntryPoint": true
+    },
+
+    "commands": {
+        "test": "test"
+    },
+
     "dependencies": {
         "Newtonsoft.Json": "8.0.3",
         "Microsoft.NETCore.Portable.Compatibility": "1.0.1-rc2-23910",
-        "System.Dynamic.Runtime": "4.0.11-rc2-23910",
-        "Flurl": "1.1.1"
+        "WebHdfs": "1.0.0-*"
     },
 
     "frameworks": {
         "net451": {
             "dependencies": {
-                "Microsoft.Net.Http": "2.2.22"
             }
         },
         "dnxcore50": {
