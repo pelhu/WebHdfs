@@ -27,7 +27,7 @@ namespace WebHdfs
         /// <summary>
         /// Home directory.
         /// </summary>
-        public string HomeDirectory { get; private set; }
+        private string homeDirectory { get; set; }
 
         /// <summary>
         /// Username to be used with securify off (when only user.name required);
@@ -99,7 +99,7 @@ namespace WebHdfs
             BaseUrl = baseUrl;
             User = user;
             Prefix = prefix;
-            GetHomeDirectory().Wait();
+            //GetHomeDirectory().Wait();
         }
 
         #region "read"
@@ -111,7 +111,7 @@ namespace WebHdfs
         /// <returns></returns>
         public Task<DirectoryListing> GetDirectoryStatus(string path)
         {
-            return CallWebHDFS<DirectoryListing>(path, "LISTSTATUS", HttpMethod.Get);
+            return callWebHDFS<DirectoryListing>(path, "LISTSTATUS", HttpMethod.Get);
         }
 
         /// <summary>
@@ -121,7 +121,7 @@ namespace WebHdfs
         /// <returns></returns>
         public Task<DirectoryEntry> GetFileStatus(string path)
         {
-            return CallWebHDFS<DirectoryEntry>(path, "GETFILESTATUS", HttpMethod.Get);
+            return callWebHDFS<DirectoryEntry>(path, "GETFILESTATUS", HttpMethod.Get);
         }
 
         /// <summary>
@@ -131,14 +131,14 @@ namespace WebHdfs
         /// <returns></returns>
         public async Task GetHomeDirectory()
         {
-            if (string.IsNullOrEmpty(HomeDirectory))
+            if (string.IsNullOrEmpty(homeDirectory))
             {
                 string uri = GetUriForOperation("/").SetQueryParam("op", "GETHOMEDIRECTORY");
-                var response = await GetResponseMessageAsync(uri);
+                var response = await getResponseMessageAsync(uri);
                 if (response.IsSuccessStatusCode)
                 {
                     JObject path = JObject.Parse(await response.Content.ReadAsStringAsync());
-                    HomeDirectory = path.Value<string>("Path");
+                    homeDirectory = path.Value<string>("Path");
                 }
             }
         }
@@ -150,7 +150,7 @@ namespace WebHdfs
         /// <returns></returns>
         public Task<ContentSummary> GetContentSummary(string path)
         {
-            return CallWebHDFS<ContentSummary>(path, "GETCONTENTSUMMARY", HttpMethod.Get);
+            return callWebHDFS<ContentSummary>(path, "GETCONTENTSUMMARY", HttpMethod.Get);
         }
 
         /// <summary>
@@ -161,7 +161,7 @@ namespace WebHdfs
         /// <returns></returns>
         public Task<FileChecksum> GetFileChecksum(string path)
         {
-            return CallWebHDFS<FileChecksum>(path, "GETFILECHECKSUM", HttpMethod.Get);
+            return callWebHDFS<FileChecksum>(path, "GETFILECHECKSUM", HttpMethod.Get);
         }
 
         /// <summary>
@@ -219,7 +219,7 @@ namespace WebHdfs
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
         public async Task<bool> CreateDirectory(string path)
         {
-            var result = await CallWebHDFS<BooleanResult>(path, "MKDIRS", HttpMethod.Put);
+            var result = await callWebHDFS<BooleanResult>(path, "MKDIRS", HttpMethod.Put);
             return result.Value;
         }
 
@@ -231,7 +231,7 @@ namespace WebHdfs
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
         public async Task<bool> RenameDirectory(string path, string newPath)
         {
-            var result = await CallWebHDFS<BooleanResult>(path, "RENAME", HttpMethod.Put, additionalQueryParameters: new { destination = newPath });
+            var result = await callWebHDFS<BooleanResult>(path, "RENAME", HttpMethod.Put, additionalQueryParameters: new { destination = newPath });
             return result.Value;
         }
 
@@ -256,7 +256,7 @@ namespace WebHdfs
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
         public async Task<bool> DeleteDirectory(string path, bool recursive)
         {
-            var result = await CallWebHDFS<BooleanResult>(path, "DELETE", HttpMethod.Delete, additionalQueryParameters: new { recursive = recursive.ToString().ToLower() });
+            var result = await callWebHDFS<BooleanResult>(path, "DELETE", HttpMethod.Delete, additionalQueryParameters: new { recursive = recursive.ToString().ToLower() });
             return result.Value;
         }
 
@@ -268,7 +268,7 @@ namespace WebHdfs
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
         public async Task<bool> SetPermissions(string path, string permissions)
         {
-            var result = await CallWebHDFS<BooleanResult>(path, "SETPERMISSION", HttpMethod.Put, additionalQueryParameters: new { permission = permissions });
+            var result = await callWebHDFS<BooleanResult>(path, "SETPERMISSION", HttpMethod.Put, additionalQueryParameters: new { permission = permissions });
             return result.Value;
         }
 
@@ -280,7 +280,7 @@ namespace WebHdfs
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
         public async Task<bool> SetOwner(string path, string owner)
         {
-            var result = await CallWebHDFS<BooleanResult>(path, "SETOWNER", HttpMethod.Put, additionalQueryParameters: new { owner = owner });
+            var result = await callWebHDFS<BooleanResult>(path, "SETOWNER", HttpMethod.Put, additionalQueryParameters: new { owner = owner });
             return result.Value;
         }
 
@@ -292,7 +292,7 @@ namespace WebHdfs
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
         public async Task<bool> SetGroup(string path, string group)
         {
-            var result = await CallWebHDFS<BooleanResult>(path, "SETOWNER", HttpMethod.Put, additionalQueryParameters: new { group = group });
+            var result = await callWebHDFS<BooleanResult>(path, "SETOWNER", HttpMethod.Put, additionalQueryParameters: new { group = group });
             return result.Value;
         }
 
@@ -304,7 +304,7 @@ namespace WebHdfs
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
         public async Task<bool> SetReplicationFactor(string path, int replicationFactor)
         {
-            var result = await CallWebHDFS<BooleanResult>(path, "SETREPLICATION", HttpMethod.Put, additionalQueryParameters: new { replication = replicationFactor });
+            var result = await callWebHDFS<BooleanResult>(path, "SETREPLICATION", HttpMethod.Put, additionalQueryParameters: new { replication = replicationFactor });
             return result.Value;
         }
 
@@ -317,7 +317,7 @@ namespace WebHdfs
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
         public async Task<bool> SetAccessTime(string path, string accessTime)
         {
-            var result = await CallWebHDFS<BooleanResult>(path, "SETTIMES", HttpMethod.Put, additionalQueryParameters: new { accesstime = accessTime });
+            var result = await callWebHDFS<BooleanResult>(path, "SETTIMES", HttpMethod.Put, additionalQueryParameters: new { accesstime = accessTime });
             return result.Value;
         }
 
@@ -330,10 +330,11 @@ namespace WebHdfs
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
         public async Task<bool> SetModificationTime(string path, string modificationTime)
         {
-            var result = await CallWebHDFS<BooleanResult>(path, "SETTIMES", HttpMethod.Put, additionalQueryParameters: new { modificationtime = modificationTime });
+            var result = await callWebHDFS<BooleanResult>(path, "SETTIMES", HttpMethod.Put, additionalQueryParameters: new { modificationtime = modificationTime });
             return result.Value;
         }
 
+        #region CreateFile
         /// <summary>
         /// Opens an FSDataOutputStream at the indicated Path. Files are overwritten by default.
         /// </summary>
@@ -345,8 +346,7 @@ namespace WebHdfs
         public async Task<bool> CreateFile(string localFile, string remotePath, bool overwrite = false, CancellationToken token = default(CancellationToken))
         {
             var sc = new StreamContent(File.OpenRead(localFile));
-            var result = await CallWebHDFS<BooleanResult>(remotePath, "CREATE", sc, new HttpRequestOptions() { Token = token, Method = HttpMethod.Put, AdditionalQueryParameters = new { overwrite = overwrite.ToString().ToLower() } });
-            return result == null || result.Value;
+            return await createFile(sc, remotePath, overwrite, token);
         }
 
         /// <summary>
@@ -356,12 +356,101 @@ namespace WebHdfs
         /// <param name="remotePath"></param>
         /// <param name="token"></param>
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
-        public async Task<bool> CreateFile(Stream content, string remotePath, bool overwrite = false, CancellationToken token=default(CancellationToken))
+        public async Task<bool> CreateFile(Stream content, string remotePath, bool overwrite = false, CancellationToken token = default(CancellationToken))
         {
             var sc = new StreamContent(content);
-            var result = await CallWebHDFS<BooleanResult>(remotePath, "CREATE&overwrite=true", sc, new HttpRequestOptions() { Token = token, Method = HttpMethod.Put, AdditionalQueryParameters = new { overwrite = overwrite.ToString().ToLower() } });
-            return result == null || result.Value;
+            return await createFile(sc, remotePath, overwrite, token);
         }
+
+        /// <summary>
+        /// Opens an FSDataOutputStream at the indicated Path. Files are overwritten by default.
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="remotePath"></param>
+        /// <param name="token"></param>
+        /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
+        public async Task<bool> CreateFile(byte[] byteArray, string remotePath, bool overwrite = false, CancellationToken token = default(CancellationToken))
+        {
+            var sc = new ByteArrayContent(byteArray);
+            return await createFile(sc, remotePath, overwrite, token);
+        }
+
+        private async Task<bool> createFile(HttpContent content, string remotePath, bool overwrite, CancellationToken token)
+        {
+            var addingUrl = prepareUrl(remotePath, "CREATE", new { overwrite = overwrite.ToString().ToLower() });
+            var location = await getRedirectLocation(addingUrl, HttpMethod.Put, token);
+
+            var response = await getResponseMessageAsync(location.ToString(), content, new HttpRequestOptions { Method = HttpMethod.Put, Token = token });
+            if (response.StatusCode == System.Net.HttpStatusCode.Created)
+            {
+                return true;
+            }
+            else
+            {
+                throw new HdfsException(response, "File was not created error. See details for plus information.");
+            }
+        }
+        #endregion
+
+
+
+        #region AppendFile
+        /// <summary>
+        /// Opens an FSDataOutputStream at the indicated Path. Files are overwritten by default.
+        /// </summary>
+        /// <param name="localFile"></param>
+        /// <param name="remotePath"></param>
+        /// <param name="overwrite"></param>
+        /// <param name="token"></param>
+        /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
+        public async Task<bool> AppendFile(string localFile, string remotePath, CancellationToken token = default(CancellationToken))
+        {
+            var sc = new StreamContent(File.OpenRead(localFile));
+            return await AppendFile(sc, remotePath, token);
+        }
+
+        /// <summary>
+        /// Opens an FSDataOutputStream at the indicated Path. Files are overwritten by default.
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="remotePath"></param>
+        /// <param name="token"></param>
+        /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
+        public async Task<bool> AppendFile(Stream content, string remotePath, CancellationToken token = default(CancellationToken))
+        {
+            var sc = new StreamContent(content);
+            return await AppendFile(sc, remotePath, token);
+        }
+
+        /// <summary>
+        /// Opens an FSDataOutputStream at the indicated Path. Files are overwritten by default.
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="remotePath"></param>
+        /// <param name="token"></param>
+        /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
+        public async Task<bool> AppendFile(byte[] byteArray, string remotePath, CancellationToken token = default(CancellationToken))
+        {
+            var content = new ByteArrayContent(byteArray);
+            return await AppendFile(content, remotePath, token);
+        }
+
+        private async Task<bool> AppendFile(HttpContent content, string remotePath, CancellationToken token)
+        {
+            var addingUrl = prepareUrl(remotePath, "APPEND");
+            var location = await getRedirectLocation(addingUrl, HttpMethod.Post, token);
+
+            var response = await getResponseMessageAsync(location.ToString(), content, new HttpRequestOptions { Method = HttpMethod.Post, Token = token });
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                return true;
+            }
+            else
+            {
+                throw new HdfsException(response, "File was not appended error. See details for plus information.");
+            }
+        }
+        #endregion
 
         ///// <summary>
         ///// Append to an existing file (optional operation).
@@ -415,14 +504,10 @@ namespace WebHdfs
             string uri = BaseUrl.AppendPathSegment(Prefix);
             if (!string.IsNullOrEmpty(path))
             {
-                if (path[0] == '/')
-                {
-                    uri += path;
-                }
-                else
-                {
-                    uri.AppendPathSegment(HomeDirectory);
-                }
+                //if (path[0] != '/')
+                //{
+                //    uri = uri.AppendPathSegment(HomeDirectory);
+                //}
 
                 uri = uri.AppendPathSegment(path);
             }
@@ -433,36 +518,49 @@ namespace WebHdfs
             return uri;
         }
 
-        private Task<T> CallWebHDFS<T>(string path, string operation, HttpMethod method, HttpContent content = null, object additionalQueryParameters = null) where T : IJObject, new()
+        private Task<T> callWebHDFS<T>(string path, string operation, HttpMethod method, HttpContent content = null, object additionalQueryParameters = null) where T : IJObject, new()
         {
-            return CallWebHDFS<T>(path, operation, content, new HttpRequestOptions() { Method = method, AdditionalQueryParameters = additionalQueryParameters });
+            return callWebHDFS<T>(path, operation, content, new HttpRequestOptions() { Method = method, AdditionalQueryParameters = additionalQueryParameters });
         }
 
-        private async Task<T> CallWebHDFS<T>(string path, string operation, HttpContent content = null, HttpRequestOptions options = null) where T : IJObject, new()
+        private async Task<T> callWebHDFS<T>(string path, string operation, HttpContent content = null, HttpRequestOptions options = null) where T : IJObject, new()
         {
-            string uri = GetUriForOperation(path).SetQueryParam("op", operation);
+            string uri = prepareUrl(path, operation, options.AdditionalQueryParameters);
 
-            if (options.AdditionalQueryParameters != null)
-            {
-                uri = uri.SetQueryParams(options.AdditionalQueryParameters);
-            }
-
-            var response = await GetResponseMessageAsync(uri, content, options ?? new HttpRequestOptions());
+            var response = await getResponseMessageAsync(uri, content, options ?? new HttpRequestOptions());
 
             if (response.IsSuccessStatusCode)
             {
+                try
+                {
+                    var jobj = JObject.Parse(await response.Content.ReadAsStringAsync());
 
-                var jobj = JObject.Parse(await response.Content.ReadAsStringAsync());
+                    if (jobj == null)
+                        return default(T);
 
-                if (jobj == null)
-                    return default(T);
-
-                var result = new T() as IJObject;
-                result.Parse(jobj);
-                return (T)result;
+                    var result = new T() as IJObject;
+                    result.Parse(jobj);
+                    return (T)result;
+                }
+                catch (Exception ex)
+                {
+                    throw new HdfsException(response, "Result Json parsing error", ex);
+                }
             }
 
             return default(T);
+        }
+
+        private string prepareUrl(string path, string operation, object additionalQueryParameters = null)
+        {
+            string uri = GetUriForOperation(path).SetQueryParam("op", operation);
+
+            if (additionalQueryParameters != null)
+            {
+                uri = uri.SetQueryParams(additionalQueryParameters);
+            }
+
+            return uri;
         }
 
         /// <summary>
@@ -472,10 +570,17 @@ namespace WebHdfs
         /// <param name="data">Data to be sent.</param>
         /// <param name="options">Request options.</param>
         /// <returns>Asynchronous task.</returns>
-        protected async Task<HttpResponseMessage> GetResponseMessageAsync(string url, object data = null, HttpRequestOptions options = null)
+        private async Task<HttpResponseMessage> getResponseMessageAsync(string url, object data = null, HttpRequestOptions options = null)
         {
             if (options == null)
                 options = new HttpRequestOptions();
+
+            var urib = new UriBuilder(url);
+            if (urib.Scheme != "http" && urib.Scheme != "https")
+            {
+                urib.Scheme = "http";
+                url = urib.ToString();
+            }
 
             using (var client = new HttpClient(InnerHandler ?? new HttpClientHandler(), InnerHandler == null))
             {
@@ -490,37 +595,37 @@ namespace WebHdfs
                     request.Content = data as HttpContent ?? new StringContent(data.ToString(), Encoding.UTF8);
                 }
 
-                try
-                {
-                    var response = await client.SendAsync(request, options.Completion, options.Token).ConfigureAwait(false);
+                var response = await client.SendAsync(request, options.Completion, options.Token).ConfigureAwait(false);
 
-                    if (!response.IsSuccessStatusCode)
-                        OnError(response, null);
-
-                    return response;
-                }
-                catch (Exception e)
+                if (!response.IsSuccessStatusCode)
                 {
-                    OnError(null, e);
+                    throw new HdfsException(response);
                 }
+
+                return response;
             }
-
-            return null;
         }
 
-        /// <summary>
-        /// Event, fired up in case if client returns responseCode other than 20*.
-        /// </summary>
-        public event EventHandler<HttpClientEventArgs> Error = delegate { };
-
-        /// <summary>
-        /// Overridable handler for Error event.
-        /// </summary>
-        /// <param name="response"><see cref="System.Net.Http.HttpResponseMessage"/>, вернувшийся от сервера</param>
-        /// <param name="exception"><see cref="System.Exception"/>, выпавший в процессе запроса</param>
-        public virtual void OnError(HttpResponseMessage response, Exception exception)
+        private async Task<Uri> getRedirectLocation(string url, HttpMethod method, CancellationToken token = default(CancellationToken))
         {
-            Error(this, new HttpClientEventArgs(response, exception));
+            using (var client = new HttpClient(new HttpClientHandler() { AllowAutoRedirect = false }, true))
+            {
+                client.BaseAddress = new Uri(BaseUrl);
+
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/octet-stream"));
+
+                var request = new HttpRequestMessage(method, url);
+
+                var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, token).ConfigureAwait(false);
+
+                if ((int)response.StatusCode >= 400)
+                {
+                    throw new HdfsException(response);
+                }
+
+                return response.Headers.Location;
+            }
         }
     }
 }
