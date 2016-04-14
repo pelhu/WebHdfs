@@ -26,18 +26,45 @@ namespace test
 
             //return;
 
-            //testCreate().Wait();
+            testCreate().Wait();
             //testAppend().Wait();
             //testAppendFile().Wait();
+            //testRead().Wait();
 
-            testRead().Wait();
             Console.ReadKey();
         }
 
         private async static Task testRead()
         {
             var w = new WebHdfsClient("http://172.17.7.211:50070", "root");
-            var r = await w.OpenFile("khamzat_test2/syslog8_1");
+
+            var ds = await w.GetDirectoryStatus("khamzat_test2");
+
+            var inpuıtPath = @"c:\!temp\testHdfs\";
+
+            Directory.GetFiles(inpuıtPath).ToList().ForEach(f => File.Delete(f));
+
+            var sw = new Stopwatch();
+            var tasks = new List<Task>();
+            sw.Start();
+            foreach (var item in ds.Files)
+            {
+                tasks.Add(Task.Run(async () =>
+                {
+                    using (var r = await w.OpenFile("khamzat_test2/" + item.PathSuffix))
+                    {
+                        using (var f = File.OpenWrite(Path.Combine(inpuıtPath, item.PathSuffix)))
+                        {
+                            await r.CopyToAsync(f);
+                        }
+                    }
+                }));
+            }
+            Task.WaitAll(tasks.ToArray());
+            sw.Stop();
+            var totalSize = ds.Files.Sum(i => i.Length) ;
+            var elapsedMilliseconds = sw.ElapsedMilliseconds;
+            Console.WriteLine($"Total sended : {totalSize.ToString("n0")} in {elapsedMilliseconds.ToString("n0")} milliseconds. Average speed : {(totalSize / (elapsedMilliseconds / 1000M)).ToString("n0")} bytes/second");
         }
 
         private async static Task testAppend()
@@ -106,11 +133,13 @@ namespace test
             var count = 3;
 
             var sw = new Stopwatch();
-            var tasks = new List<Task>();
+            //var tasks = new List<Task>();
             sw.Start();
             for (int i = 0; i < count; i++)
             {
-                tasks.Add(w.CreateFile(fileInfo.FullName, $"khamzat_test2/{fileInfo.Name}_{(i + 1)}", true));
+                await w.CreateFile(fileInfo.FullName, $"khamzat_test2/{fileInfo.Name}_{(i + 1)}", true);
+                //tasks.Add(w.CreateFile(fileInfo.FullName, $"khamzat_test2/{fileInfo.Name}_{(i + 1)}", true));
+
                 //w.CreateFile(fileInfo.FullName, $"khamzat_test/{fileInfo.Name}_{(i + 1)}", true).ContinueWith(t =>
                 //  {
                 //      var totalSize = fileInfo.Length * (i + 1);
@@ -121,7 +150,7 @@ namespace test
                 //  }).Wait(50);
             }
 
-            Task.WaitAll(tasks.ToArray());
+            //Task.WaitAll(tasks.ToArray());
 
             sw.Stop();
             var totalSize = fileInfo.Length * count;

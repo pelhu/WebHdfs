@@ -196,7 +196,7 @@ namespace WebHdfs
         /// <returns>Async <see cref="Task{Stream}"/> with file content.</returns>
         public async Task<Stream> OpenFile(string path, int offset = 0, int length = -1, CancellationToken token = default(CancellationToken))
         {
-            string uri = GetUriForOperation("path").SetQueryParam("op", "OPEN");
+            string uri = GetUriForOperation(path).SetQueryParam("op", "OPEN");
             if (offset > 0)
                 uri += uri.SetQueryParam("offset", offset.ToString());
             if (length > 0)
