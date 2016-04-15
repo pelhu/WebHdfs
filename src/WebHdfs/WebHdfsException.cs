@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WebHdfs
 {
-    public class HdfsException : Exception
+    public class WebHdfsException : Exception
     {
         /// <summary>
         /// <see cref="System.Net.Http.HttpResponseMessage"/> returned by client.
@@ -15,7 +15,7 @@ namespace WebHdfs
 
         private string _content;
 
-        public HdfsException(HttpResponseMessage response, string message, Exception innerException) : base(message, innerException)
+        public WebHdfsException(HttpResponseMessage response, string message, Exception innerException) : base(message, innerException)
         {
             Response = response;
 
@@ -31,11 +31,11 @@ namespace WebHdfs
             catch { }
         }
 
-        public HdfsException(HttpResponseMessage response, string message) : this(response, message, null)
+        public WebHdfsException(HttpResponseMessage response, string message) : this(response, message, null)
         {
         }
 
-        public HdfsException(HttpResponseMessage response) : this(response, null)
+        public WebHdfsException(HttpResponseMessage response) : this(response, null)
         {
         }
 

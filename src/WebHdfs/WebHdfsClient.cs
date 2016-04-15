@@ -17,12 +17,19 @@ namespace WebHdfs
     /// <summary>
     /// Minimalistic WebHdfs client
     /// </summary>
-    public class WebHdfsClient
+    public class WebHdfsClient : IDisposable
     {
+        private HttpClient httpClient { get; set; }
         /// <summary>
         /// Base url of WebHdfs service.
         /// </summary>
-        public string BaseUrl { get; private set; }
+        public string BaseUrl
+        {
+            get
+            {
+                return httpClient.BaseAddress.ToString();
+            }
+        }
 
         /// <summary>
         /// Home directory.
@@ -96,7 +103,7 @@ namespace WebHdfs
         public WebHdfsClient(HttpMessageHandler handler, string baseUrl, string user = null, string prefix = _defaultPrefix)
         {
             InnerHandler = handler;
-            BaseUrl = baseUrl;
+            httpClient = new HttpClient(handler) { BaseAddress = new Uri(baseUrl) };
             User = user;
             Prefix = prefix;
             //GetHomeDirectory().Wait();
@@ -109,9 +116,16 @@ namespace WebHdfs
         /// </summary>
         /// <param name="path">The string representation a Path.</param>
         /// <returns></returns>
-        public Task<DirectoryListing> GetDirectoryStatus(string path)
+        public async Task<DirectoryListing> GetDirectoryStatus(string path)
         {
-            return callWebHDFS<DirectoryListing>(path, "LISTSTATUS", HttpMethod.Get);
+            try
+            {
+                return await callWebHDFS<DirectoryListing>(path, "LISTSTATUS", HttpMethod.Get);
+            }
+            catch (WebHdfs.WebHdfsException ex) when (ex.Response?.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -119,9 +133,16 @@ namespace WebHdfs
         /// </summary>
         /// <param name="path">The string representation a Path.</param>
         /// <returns></returns>
-        public Task<DirectoryEntry> GetFileStatus(string path)
+        public async Task<DirectoryEntry> GetFileStatus(string path)
         {
-            return callWebHDFS<DirectoryEntry>(path, "GETFILESTATUS", HttpMethod.Get);
+            try
+            {
+                return await callWebHDFS<DirectoryEntry>(path, "GETFILESTATUS", HttpMethod.Get);
+            }
+            catch (WebHdfs.WebHdfsException ex) when (ex.Response?.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -148,9 +169,16 @@ namespace WebHdfs
         /// </summary>
         /// <param name="path">The string representation a Path.</param>
         /// <returns></returns>
-        public Task<ContentSummary> GetContentSummary(string path)
+        public async Task<ContentSummary> GetContentSummary(string path)
         {
-            return callWebHDFS<ContentSummary>(path, "GETCONTENTSUMMARY", HttpMethod.Get);
+            try
+            {
+                return await callWebHDFS<ContentSummary>(path, "GETCONTENTSUMMARY", HttpMethod.Get);
+            }
+            catch (WebHdfs.WebHdfsException ex) when (ex.Response?.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -159,9 +187,16 @@ namespace WebHdfs
         /// <param name="path">The file checksum. The default return value is null, which 
         /// indicates that no checksum algorithm is implemented in the corresponding FileSystem. </param>
         /// <returns></returns>
-        public Task<FileChecksum> GetFileChecksum(string path)
+        public async Task<FileChecksum> GetFileChecksum(string path)
         {
-            return callWebHDFS<FileChecksum>(path, "GETFILECHECKSUM", HttpMethod.Get);
+            try
+            {
+                return await callWebHDFS<FileChecksum>(path, "GETFILECHECKSUM", HttpMethod.Get);
+            }
+            catch (WebHdfs.WebHdfsException ex) when (ex.Response?.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -217,9 +252,15 @@ namespace WebHdfs
         /// </summary>
         /// <param name="path">The string representation a Path.</param>
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
-        public async Task<bool> CreateDirectory(string path)
+        public async Task<bool> CreateDirectory(string path, string permissions=null)
         {
-            var result = await callWebHDFS<BooleanResult>(path, "MKDIRS", HttpMethod.Put);
+            object additionalQueryParameters = null;
+            if (!string.IsNullOrWhiteSpace(permissions))
+            {
+                additionalQueryParameters = new { permission = permissions };
+            }
+
+            var result = await callWebHDFS<BooleanResult>(path, "MKDIRS", HttpMethod.Put, additionalQueryParameters: additionalQueryParameters);
             return result.Value;
         }
 
@@ -229,7 +270,7 @@ namespace WebHdfs
         /// <param name="path">The string representation a Path.</param>
         /// <param name="newPath"></param>
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
-        public async Task<bool> RenameDirectory(string path, string newPath)
+        public async Task<bool> Rename(string path, string newPath)
         {
             var result = await callWebHDFS<BooleanResult>(path, "RENAME", HttpMethod.Put, additionalQueryParameters: new { destination = newPath });
             return result.Value;
@@ -241,9 +282,9 @@ namespace WebHdfs
         /// </summary>
         /// <param name="path">the path to delete</param>
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
-        public Task<bool> DeleteDirectory(string path)
+        public async Task<bool> Delete(string path)
         {
-            return DeleteDirectory(path, false);
+            return await Delete(path, false);
         }
 
 
@@ -254,7 +295,7 @@ namespace WebHdfs
         /// <param name="recursive">if path is a directory and set to true, the directory is deleted else throws an exception.
         /// In case of a file the recursive can be set to either true or false. </param>
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
-        public async Task<bool> DeleteDirectory(string path, bool recursive)
+        public async Task<bool> Delete(string path, bool recursive)
         {
             var result = await callWebHDFS<BooleanResult>(path, "DELETE", HttpMethod.Delete, additionalQueryParameters: new { recursive = recursive.ToString().ToLower() });
             return result.Value;
@@ -380,14 +421,14 @@ namespace WebHdfs
             var addingUrl = prepareUrl(remotePath, "CREATE", new { overwrite = overwrite.ToString().ToLower() });
             var location = await getRedirectLocation(addingUrl, HttpMethod.Put, token);
 
-            var response = await getResponseMessageAsync(location.ToString(), content, new HttpRequestOptions { Method = HttpMethod.Put, Token = token });
+            var response = await getResponseMessageAsync(location.ToString(), content, new WebHdfsRequestOptions { Method = HttpMethod.Put, Token = token });
             if (response.StatusCode == System.Net.HttpStatusCode.Created)
             {
                 return true;
             }
             else
             {
-                throw new HdfsException(response, "File was not created error. See details for plus information.");
+                throw new WebHdfsException(response, "File was not created error. See details for plus information.");
             }
         }
         #endregion
@@ -440,62 +481,17 @@ namespace WebHdfs
             var addingUrl = prepareUrl(remotePath, "APPEND");
             var location = await getRedirectLocation(addingUrl, HttpMethod.Post, token);
 
-            var response = await getResponseMessageAsync(location.ToString(), content, new HttpRequestOptions { Method = HttpMethod.Post, Token = token });
+            var response = await getResponseMessageAsync(location.ToString(), content, new WebHdfsRequestOptions { Method = HttpMethod.Post, Token = token });
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 return true;
             }
             else
             {
-                throw new HdfsException(response, "File was not appended error. See details for plus information.");
+                throw new WebHdfsException(response, "File was not appended error. See details for plus information.");
             }
         }
         #endregion
-
-        ///// <summary>
-        ///// Append to an existing file (optional operation).
-        ///// </summary>
-        ///// <param name="localFile"></param>
-        ///// <param name="remotePath"></param>
-        ///// <returns></returns>
-        //public async Task<string> AppendFile(string localFile, string remotePath)
-        //{
-        //	var hc = CreateHTTPClient(false);
-        //	var resp = await hc.PostAsync(GetUriForOperation(remotePath) + "op=APPEND", null);
-        //	if (!resp.IsSuccessStatusCode)
-        //		return null;
-        //	var postLocation = resp.Headers.Location;
-        //	StreamContent sc = new StreamContent(File.OpenRead(localFile));
-        //	var resp2 = await hc.PostAsync(postLocation, sc);
-        //	if (!resp2.IsSuccessStatusCode)
-        //		return null;
-
-        //	// oddly, this is returning a 403 forbidden 
-        //	// due to: "IOException","javaClassName":"java.io.IOException","message":"java.io.IOException: 
-        //	// Append to hdfs not supported. Please refer to dfs.support.append configuration parameter.
-        //	return resp2.Headers.Location.ToString();
-        //}
-
-        ///// <summary>
-        ///// Append to an existing file (optional operation).
-        ///// </summary>
-        ///// <param name="localFile"></param>
-        ///// <param name="remotePath"></param>
-        ///// <returns></returns>
-        //public async Task<string> AppendFile(Stream content, string remotePath)
-        //{
-        //	var hc = CreateHTTPClient(false);
-        //	var resp = await hc.PostAsync(GetUriForOperation(remotePath) + "op=APPEND", null);
-        //	if (!resp.IsSuccessStatusCode)
-        //		return null;
-
-        //	var postLocation = resp.Headers.Location;
-        //	var sc = new StreamContent(content);
-        //	var resp2 = await hc.PostAsync(postLocation, sc);
-        //	if (!resp2.IsSuccessStatusCode)
-        //		return null;
-        //	return resp2.Headers.Location.ToString();
-        //}
 
         #endregion
 
@@ -520,14 +516,14 @@ namespace WebHdfs
 
         private Task<T> callWebHDFS<T>(string path, string operation, HttpMethod method, HttpContent content = null, object additionalQueryParameters = null) where T : IJObject, new()
         {
-            return callWebHDFS<T>(path, operation, content, new HttpRequestOptions() { Method = method, AdditionalQueryParameters = additionalQueryParameters });
+            return callWebHDFS<T>(path, operation, content, new WebHdfsRequestOptions() { Method = method, AdditionalQueryParameters = additionalQueryParameters });
         }
 
-        private async Task<T> callWebHDFS<T>(string path, string operation, HttpContent content = null, HttpRequestOptions options = null) where T : IJObject, new()
+        private async Task<T> callWebHDFS<T>(string path, string operation, HttpContent content = null, WebHdfsRequestOptions options = null) where T : IJObject, new()
         {
             string uri = prepareUrl(path, operation, options.AdditionalQueryParameters);
 
-            var response = await getResponseMessageAsync(uri, content, options ?? new HttpRequestOptions());
+            var response = await getResponseMessageAsync(uri, content, options ?? new WebHdfsRequestOptions());
 
             if (response.IsSuccessStatusCode)
             {
@@ -544,7 +540,7 @@ namespace WebHdfs
                 }
                 catch (Exception ex)
                 {
-                    throw new HdfsException(response, "Result Json parsing error", ex);
+                    throw new WebHdfsException(response, "Result Json parsing error", ex);
                 }
             }
 
@@ -570,40 +566,25 @@ namespace WebHdfs
         /// <param name="data">Data to be sent.</param>
         /// <param name="options">Request options.</param>
         /// <returns>Asynchronous task.</returns>
-        private async Task<HttpResponseMessage> getResponseMessageAsync(string url, object data = null, HttpRequestOptions options = null)
+        private async Task<HttpResponseMessage> getResponseMessageAsync(string url, HttpContent data = null, WebHdfsRequestOptions options = null)
         {
             if (options == null)
-                options = new HttpRequestOptions();
+                options = new WebHdfsRequestOptions();
 
-            var urib = new UriBuilder(url);
-            if (urib.Scheme != "http" && urib.Scheme != "https")
+            var request = new HttpRequestMessage(options.Method, url);
+
+            if (options.Method != HttpMethod.Get && data != null)
             {
-                urib.Scheme = "http";
-                url = urib.ToString();
+                request.Content = data;
+            }
+            var response = await httpClient.SendAsync(request, options.Completion, options.Token).ConfigureAwait(false);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new WebHdfsException(response);
             }
 
-            using (var client = new HttpClient(InnerHandler ?? new HttpClientHandler(), InnerHandler == null))
-            {
-                client.BaseAddress = new Uri(BaseUrl);
-
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/octet-stream"));
-
-                var request = new HttpRequestMessage(options.Method, url);
-                if (options.Method != HttpMethod.Get && data != null)
-                {
-                    request.Content = data as HttpContent ?? new StringContent(data.ToString(), Encoding.UTF8);
-                }
-
-                var response = await client.SendAsync(request, options.Completion, options.Token).ConfigureAwait(false);
-
-                if (!response.IsSuccessStatusCode)
-                {
-                    throw new HdfsException(response);
-                }
-
-                return response;
-            }
+            return response;
         }
 
         private async Task<Uri> getRedirectLocation(string url, HttpMethod method, CancellationToken token = default(CancellationToken))
@@ -612,8 +593,8 @@ namespace WebHdfs
             {
                 client.BaseAddress = new Uri(BaseUrl);
 
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/octet-stream"));
+                //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/octet-stream"));
 
                 var request = new HttpRequestMessage(method, url);
 
@@ -621,11 +602,48 @@ namespace WebHdfs
 
                 if ((int)response.StatusCode >= 400)
                 {
-                    throw new HdfsException(response);
+                    throw new WebHdfsException(response);
                 }
 
                 return response.Headers.Location;
             }
         }
+
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    InnerHandler?.Dispose();
+                    httpClient?.Dispose();
+                    // TODO: dispose managed state (managed objects).
+                }
+
+                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
+                // TODO: set large fields to null.
+
+                disposedValue = true;
+            }
+        }
+
+        // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
+        // ~WebHdfsClient() {
+        //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+        //   Dispose(false);
+        // }
+
+        // This code added to correctly implement the disposable pattern.
+        void IDisposable.Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
+            // TODO: uncomment the following line if the finalizer is overridden above.
+            // GC.SuppressFinalize(this);
+        }
+        #endregion
     }
 }

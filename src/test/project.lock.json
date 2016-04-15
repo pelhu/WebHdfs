@@ -79,7 +79,6 @@
         "dependencies": {
           "Flurl": "1.1.1",
           "Microsoft.Net.Http": "2.2.22",
-          "Microsoft.NETCore.Portable.Compatibility": "1.0.1-rc2-23910",
           "Newtonsoft.Json": "8.0.3",
           "System.Dynamic.Runtime": "4.0.11-rc2-23910"
         }
@@ -809,7 +808,6 @@
         "framework": "DNXCore,Version=v5.0",
         "dependencies": {
           "Flurl": "1.1.1",
-          "Microsoft.NETCore.Portable.Compatibility": "1.0.1-rc2-23910",
           "NETStandard.Library": "1.0.0-rc2-23910",
           "Newtonsoft.Json": "8.0.3",
           "System.Dynamic.Runtime": "4.0.11-rc2-23910"
@@ -893,7 +891,6 @@
         "dependencies": {
           "Flurl": "1.1.1",
           "Microsoft.Net.Http": "2.2.22",
-          "Microsoft.NETCore.Portable.Compatibility": "1.0.1-rc2-23910",
           "Newtonsoft.Json": "8.0.3",
           "System.Dynamic.Runtime": "4.0.11-rc2-23910"
         }
@@ -976,7 +973,6 @@
         "dependencies": {
           "Flurl": "1.1.1",
           "Microsoft.Net.Http": "2.2.22",
-          "Microsoft.NETCore.Portable.Compatibility": "1.0.1-rc2-23910",
           "Newtonsoft.Json": "8.0.3",
           "System.Dynamic.Runtime": "4.0.11-rc2-23910"
         }
@@ -2570,7 +2566,6 @@
         "framework": "DNXCore,Version=v5.0",
         "dependencies": {
           "Flurl": "1.1.1",
-          "Microsoft.NETCore.Portable.Compatibility": "1.0.1-rc2-23910",
           "NETStandard.Library": "1.0.0-rc2-23910",
           "Newtonsoft.Json": "8.0.3",
           "System.Dynamic.Runtime": "4.0.11-rc2-23910"
@@ -4172,7 +4167,6 @@
         "framework": "DNXCore,Version=v5.0",
         "dependencies": {
           "Flurl": "1.1.1",
-          "Microsoft.NETCore.Portable.Compatibility": "1.0.1-rc2-23910",
           "NETStandard.Library": "1.0.0-rc2-23910",
           "Newtonsoft.Json": "8.0.3",
           "System.Dynamic.Runtime": "4.0.11-rc2-23910"

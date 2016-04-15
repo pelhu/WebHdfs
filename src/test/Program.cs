@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -12,8 +13,19 @@ namespace test
     {
         public static void Main(string[] args)
         {
-            //var w = new WebHdfsClient("http://172.17.7.211:50070", "root");
-            //var result = w.DeleteDirectory("user", true).Result;
+            //var w = GetW();
+            //var result = w.GetContentSummary("khamzat_test2").Result;
+            //Console.WriteLine(JsonConvert.SerializeObject(result));
+
+            //Console.ReadKey();
+            //return;
+
+
+            //var w = GetW();
+            //var result = w.DeleteDirectory("khamzat_test").Result;
+            //Console.WriteLine(JsonConvert.SerializeObject(result));
+
+            //Console.ReadKey();
             //return;
 
 
@@ -36,7 +48,7 @@ namespace test
 
         private async static Task testRead()
         {
-            var w = new WebHdfsClient("http://172.17.7.211:50070", "root");
+            var w = GetW();
 
             var ds = await w.GetDirectoryStatus("khamzat_test2");
 
@@ -62,14 +74,19 @@ namespace test
             }
             Task.WaitAll(tasks.ToArray());
             sw.Stop();
-            var totalSize = ds.Files.Sum(i => i.Length) ;
+            var totalSize = ds.Files.Sum(i => i.Length);
             var elapsedMilliseconds = sw.ElapsedMilliseconds;
             Console.WriteLine($"Total sended : {totalSize.ToString("n0")} in {elapsedMilliseconds.ToString("n0")} milliseconds. Average speed : {(totalSize / (elapsedMilliseconds / 1000M)).ToString("n0")} bytes/second");
         }
 
+        private static WebHdfsClient GetW()
+        {
+            return new WebHdfsClient("http://172.17.7.191:50070", "clog");
+        }
+
         private async static Task testAppend()
         {
-            var w = new WebHdfsClient("http://172.17.7.211:50070", "root");
+            var w = GetW();
 
             var ds = await w.GetDirectoryStatus("khamzat_test2");
 
@@ -97,7 +114,7 @@ namespace test
             var tasks = new List<Task>();
             sw.Start();
 
-            var w = new WebHdfsClient("http://172.17.7.211:50070", "root");
+            var w = GetW();
 
             var ds = await w.GetDirectoryStatus("khamzat_test2");
 
@@ -118,16 +135,17 @@ namespace test
 
         private async static Task testCreate()
         {
-            var w = new WebHdfsClient("http://172.17.7.211:50070", "root");
-
-            await w.CreateDirectory("khamzat_test");
-
+            var w = GetW();
+            
             var fileInfo = new FileInfo(@"c:\!temp\syslog8");
 
             var ds = await w.GetDirectoryStatus("khamzat_test2");
-            foreach (var item in ds.Files.Where(f => f.PathSuffix.StartsWith(fileInfo.Name)))
+            if (ds!=null)
             {
-                await w.DeleteDirectory("khamzat_test2/" + item.PathSuffix);
+                foreach (var item in ds.Files.Where(f => f.PathSuffix.StartsWith(fileInfo.Name)))
+                {
+                    await w.Delete("khamzat_test2/" + item.PathSuffix);
+                } 
             }
 
             var count = 3;
