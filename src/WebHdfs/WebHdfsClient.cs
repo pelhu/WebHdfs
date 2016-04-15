@@ -154,7 +154,7 @@ namespace WebHdfs
         {
             if (string.IsNullOrEmpty(homeDirectory))
             {
-                string uri = GetUriForOperation("/").SetQueryParam("op", "GETHOMEDIRECTORY");
+                string uri = prepareUrl("/", "GETHOMEDIRECTORY");
                 var response = await getResponseMessageAsync(uri);
                 if (response.IsSuccessStatusCode)
                 {
@@ -231,7 +231,7 @@ namespace WebHdfs
         /// <returns>Async <see cref="Task{Stream}"/> with file content.</returns>
         public async Task<Stream> OpenFile(string path, int offset = 0, int length = -1, CancellationToken token = default(CancellationToken))
         {
-            string uri = GetUriForOperation(path).SetQueryParam("op", "OPEN");
+            string uri = prepareUrl(path, "OPEN");
             if (offset > 0)
                 uri += uri.SetQueryParam("offset", offset.ToString());
             if (length > 0)
@@ -244,7 +244,6 @@ namespace WebHdfs
 
         #endregion
 
-        #region "put"
         // todo: add permissions
         /// <summary>
         /// Make the given file and all non-existent parents into directories. 
@@ -252,7 +251,7 @@ namespace WebHdfs
         /// </summary>
         /// <param name="path">The string representation a Path.</param>
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
-        public async Task<bool> CreateDirectory(string path, string permissions=null)
+        public async Task<bool> CreateDirectory(string path, string permissions = null)
         {
             object additionalQueryParameters = null;
             if (!string.IsNullOrWhiteSpace(permissions))
@@ -300,6 +299,8 @@ namespace WebHdfs
             var result = await callWebHDFS<BooleanResult>(path, "DELETE", HttpMethod.Delete, additionalQueryParameters: new { recursive = recursive.ToString().ToLower() });
             return result.Value;
         }
+
+        #region Set File Attributes
 
         /// <summary>
         /// Set permission of a path.
@@ -374,6 +375,7 @@ namespace WebHdfs
             var result = await callWebHDFS<BooleanResult>(path, "SETTIMES", HttpMethod.Put, additionalQueryParameters: new { modificationtime = modificationTime });
             return result.Value;
         }
+        #endregion
 
         #region CreateFile
         /// <summary>
@@ -493,27 +495,6 @@ namespace WebHdfs
         }
         #endregion
 
-        #endregion
-
-        private string GetUriForOperation(string path)
-        {
-            string uri = BaseUrl.AppendPathSegment(Prefix);
-            if (!string.IsNullOrEmpty(path))
-            {
-                //if (path[0] != '/')
-                //{
-                //    uri = uri.AppendPathSegment(HomeDirectory);
-                //}
-
-                uri = uri.AppendPathSegment(path);
-            }
-
-            if (!string.IsNullOrEmpty(User))
-                uri = uri.SetQueryParam("user.name", User);
-
-            return uri;
-        }
-
         private Task<T> callWebHDFS<T>(string path, string operation, HttpMethod method, HttpContent content = null, object additionalQueryParameters = null) where T : IJObject, new()
         {
             return callWebHDFS<T>(path, operation, content, new WebHdfsRequestOptions() { Method = method, AdditionalQueryParameters = additionalQueryParameters });
@@ -549,14 +530,19 @@ namespace WebHdfs
 
         private string prepareUrl(string path, string operation, object additionalQueryParameters = null)
         {
-            string uri = GetUriForOperation(path).SetQueryParam("op", operation);
+            if (string.IsNullOrWhiteSpace(path)) path = "";
+
+            path = path.SetQueryParam("op", operation);
+
+            if (!string.IsNullOrEmpty(User))
+                path = path.SetQueryParam("user.name", User);
 
             if (additionalQueryParameters != null)
             {
-                uri = uri.SetQueryParams(additionalQueryParameters);
+                path = path.SetQueryParams(additionalQueryParameters);
             }
 
-            return uri;
+            return path;
         }
 
         /// <summary>
