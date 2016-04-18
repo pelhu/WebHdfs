@@ -45,6 +45,7 @@ namespace WebHdfs
         public string Prefix { get; private set; }
 
         const string _defaultPrefix = "webhdfs/v1";
+        const string _defaultPermissions = "755";
 
         /// <summary>
         /// Underlying <see cref="HttpMessageHandler"/> that will process web requests (for testing purpose mostly).
@@ -116,11 +117,11 @@ namespace WebHdfs
         /// </summary>
         /// <param name="path">The string representation a Path.</param>
         /// <returns></returns>
-        public async Task<DirectoryListing> GetDirectoryStatus(string path)
+        public async Task<DirectoryItems> GetDirectoryItems(string path)
         {
             try
             {
-                return await callWebHDFS<DirectoryListing>(path, "LISTSTATUS", HttpMethod.Get);
+                return await callWebHDFS<DirectoryItems>(path, "LISTSTATUS", HttpMethod.Get);
             }
             catch (WebHdfs.WebHdfsException ex) when (ex.Response?.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
@@ -133,15 +134,28 @@ namespace WebHdfs
         /// </summary>
         /// <param name="path">The string representation a Path.</param>
         /// <returns></returns>
-        public async Task<DirectoryEntry> GetFileStatus(string path)
+        public async Task<FileStatus> GetStatus(string path)
         {
             try
             {
-                return await callWebHDFS<DirectoryEntry>(path, "GETFILESTATUS", HttpMethod.Get);
+                return await callWebHDFS<FileStatus>(path, "GETFILESTATUS", HttpMethod.Get);
             }
             catch (WebHdfs.WebHdfsException ex) when (ex.Response?.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
                 return null;
+            }
+        }
+
+        public async Task<bool> Exists(string path)
+        {
+            try
+            {
+                var dummy = await callWebHDFS<FileStatus>(path, "GETFILESTATUS", HttpMethod.Get);
+                return true;
+            }
+            catch (WebHdfs.WebHdfsException ex) when (ex.Response?.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return false;
             }
         }
 
@@ -242,22 +256,95 @@ namespace WebHdfs
             return await response.Content.ReadAsStreamAsync();
         }
 
+        /// <summary>
+        /// Download a file from HDFS
+        /// </summary>
+        /// <param name="sourcePath"></param>
+        /// <param name="destinationPath"></param>
+        /// <param name="overwrite"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        public async Task<bool> DownloadFile(string sourcePath, string destinationPath, bool overwrite = false, CancellationToken token = default(CancellationToken))
+        {
+            if (string.IsNullOrWhiteSpace(sourcePath))
+            {
+                throw new ArgumentException("Path must not be empty", nameof(sourcePath));
+            }
+
+            if (string.IsNullOrWhiteSpace(destinationPath))
+            {
+                throw new ArgumentException("Path must not be empty", nameof(destinationPath));
+            }
+
+            if (!overwrite && File.Exists(destinationPath))
+            {
+                throw new IOException("Destination file already exists.");
+            }
+
+            using (var inputStream = await OpenFile(sourcePath))
+            {
+                using (var outputStream = File.OpenWrite(destinationPath))
+                {
+                    await inputStream.CopyToAsync(outputStream);
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Download a directory from HDFS
+        /// </summary>
+        /// <param name="sourcePath"></param>
+        /// <param name="destinationPath"></param>
+        /// <param name="overwrite"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        public async Task<bool> DownloadDirectory(string sourceDirectory, string destinationDirectory, bool overwrite = false, CancellationToken token = default(CancellationToken))
+        {
+            if (string.IsNullOrWhiteSpace(sourceDirectory))
+            {
+                throw new ArgumentException("Path must not be empty", nameof(sourceDirectory));
+            }
+
+            if (string.IsNullOrWhiteSpace(destinationDirectory))
+            {
+                throw new ArgumentException("Path must not be empty", nameof(destinationDirectory));
+            }
+
+            var list = await GetDirectoryStatus(sourceDirectory);
+
+            foreach (var file in list.Files)
+            {
+                await DownloadFile(sourceDirectory.AppendPathSegment(file.PathSuffix), Path.Combine(destinationDirectory, file.PathSuffix), overwrite);
+            }
+
+            foreach (var childDir in list.Directories)
+            {
+                var childDestDir = Path.Combine(destinationDirectory, childDir.PathSuffix);
+
+                Directory.CreateDirectory(childDestDir);
+
+                await DownloadDirectory(sourceDirectory.AppendPathSegment(childDir.PathSuffix), childDestDir, overwrite);
+            }
+
+            return true;
+        }
+
         #endregion
 
-        // todo: add permissions
+        #region divers
         /// <summary>
         /// Make the given file and all non-existent parents into directories. 
         /// Has the semantics of Unix 'mkdir -p'. Existence of the directory hierarchy is not an error. 
         /// </summary>
         /// <param name="path">The string representation a Path.</param>
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
-        public async Task<bool> CreateDirectory(string path, string permissions = null)
+        public async Task<bool> CreateDirectory(string path, string permissions = _defaultPermissions)
         {
             object additionalQueryParameters = null;
-            if (!string.IsNullOrWhiteSpace(permissions))
-            {
-                additionalQueryParameters = new { permission = permissions };
-            }
+            throwIfPermissionsNotValide(permissions);
+            additionalQueryParameters = new { permission = permissions };
 
             var result = await callWebHDFS<BooleanResult>(path, "MKDIRS", HttpMethod.Put, additionalQueryParameters: additionalQueryParameters);
             return result.Value;
@@ -299,6 +386,7 @@ namespace WebHdfs
             var result = await callWebHDFS<BooleanResult>(path, "DELETE", HttpMethod.Delete, additionalQueryParameters: new { recursive = recursive.ToString().ToLower() });
             return result.Value;
         }
+        #endregion
 
         #region Set File Attributes
 
@@ -310,6 +398,8 @@ namespace WebHdfs
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
         public async Task<bool> SetPermissions(string path, string permissions)
         {
+            throwIfPermissionsNotValide(permissions);
+
             var result = await callWebHDFS<BooleanResult>(path, "SETPERMISSION", HttpMethod.Put, additionalQueryParameters: new { permission = permissions });
             return result.Value;
         }
@@ -379,46 +469,66 @@ namespace WebHdfs
 
         #region CreateFile
         /// <summary>
-        /// Opens an FSDataOutputStream at the indicated Path. Files are overwritten by default.
+        /// Opens an FSDataOutputStream at the indicated Path.
         /// </summary>
         /// <param name="localFile"></param>
         /// <param name="remotePath"></param>
         /// <param name="overwrite"></param>
         /// <param name="token"></param>
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
-        public async Task<bool> CreateFile(string localFile, string remotePath, bool overwrite = false, CancellationToken token = default(CancellationToken))
+        public async Task<bool> CreateFile(string localFile, string remotePath, bool overwrite = false, string permissions = _defaultPermissions, CancellationToken token = default(CancellationToken))
         {
             var sc = new StreamContent(File.OpenRead(localFile));
-            return await createFile(sc, remotePath, overwrite, token);
+            return await createFile(sc, remotePath, overwrite, permissions, token);
         }
 
         /// <summary>
-        /// Opens an FSDataOutputStream at the indicated Path. Files are overwritten by default.
+        /// Opens an FSDataOutputStream at the indicated Path.
         /// </summary>
         /// <param name="content"></param>
         /// <param name="remotePath"></param>
+        /// <param name="overwrite"></param>
+        /// <param name="permissions"></param>
         /// <param name="token"></param>
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
-        public async Task<bool> CreateFile(Stream content, string remotePath, bool overwrite = false, CancellationToken token = default(CancellationToken))
+        public async Task<bool> CreateFile(Stream content, string remotePath, bool overwrite = false, string permissions = _defaultPermissions, CancellationToken token = default(CancellationToken))
         {
             var sc = new StreamContent(content);
-            return await createFile(sc, remotePath, overwrite, token);
+            return await createFile(sc, remotePath, overwrite, permissions, token);
         }
 
         /// <summary>
-        /// Opens an FSDataOutputStream at the indicated Path. Files are overwritten by default.
+        /// Opens an FSDataOutputStream at the indicated Path.
         /// </summary>
-        /// <param name="content"></param>
+        /// <param name="byteArray"></param>
         /// <param name="remotePath"></param>
+        /// <param name="overwrite"></param>
+        /// <param name="permissions"></param>
         /// <param name="token"></param>
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
-        public async Task<bool> CreateFile(byte[] byteArray, string remotePath, bool overwrite = false, CancellationToken token = default(CancellationToken))
+        public async Task<bool> CreateFile(byte[] byteArray, string remotePath, bool overwrite = false, string permissions = _defaultPermissions, CancellationToken token = default(CancellationToken))
         {
             var sc = new ByteArrayContent(byteArray);
-            return await createFile(sc, remotePath, overwrite, token);
+            return await createFile(sc, remotePath, overwrite, permissions, token);
+        }
+        
+        /// <summary>
+        /// Opens an FSDataOutputStream at the indicated Path.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="encoding">If null Utf8 will be used</param>
+        /// <param name="remotePath"></param>
+        /// <param name="overwrite"></param>
+        /// <param name="permissions"></param>
+        /// <param name="token"></param>
+        /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
+        public async Task<bool> CreateFile(string text, Encoding encoding, string remotePath, bool overwrite = false, string permissions = _defaultPermissions, CancellationToken token = default(CancellationToken))
+        {
+            var sc = new ByteArrayContent((encoding ?? Encoding.UTF8).GetBytes(text));
+            return await createFile(sc, remotePath, overwrite, permissions, token);
         }
 
-        private async Task<bool> createFile(HttpContent content, string remotePath, bool overwrite, CancellationToken token)
+        private async Task<bool> createFile(HttpContent content, string remotePath, bool overwrite, string permissions = _defaultPermissions, CancellationToken token = default(CancellationToken))
         {
             var addingUrl = prepareUrl(remotePath, "CREATE", new { overwrite = overwrite.ToString().ToLower() });
             var location = await getRedirectLocation(addingUrl, HttpMethod.Put, token);
@@ -435,25 +545,22 @@ namespace WebHdfs
         }
         #endregion
 
-
-
         #region AppendFile
         /// <summary>
-        /// Opens an FSDataOutputStream at the indicated Path. Files are overwritten by default.
+        /// Opens an FSDataOutputStream at the indicated Path.
         /// </summary>
         /// <param name="localFile"></param>
         /// <param name="remotePath"></param>
-        /// <param name="overwrite"></param>
         /// <param name="token"></param>
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
         public async Task<bool> AppendFile(string localFile, string remotePath, CancellationToken token = default(CancellationToken))
         {
             var sc = new StreamContent(File.OpenRead(localFile));
-            return await AppendFile(sc, remotePath, token);
+            return await appendFile(sc, remotePath, token);
         }
 
         /// <summary>
-        /// Opens an FSDataOutputStream at the indicated Path. Files are overwritten by default.
+        /// Opens an FSDataOutputStream at the indicated Path.
         /// </summary>
         /// <param name="content"></param>
         /// <param name="remotePath"></param>
@@ -462,23 +569,37 @@ namespace WebHdfs
         public async Task<bool> AppendFile(Stream content, string remotePath, CancellationToken token = default(CancellationToken))
         {
             var sc = new StreamContent(content);
-            return await AppendFile(sc, remotePath, token);
+            return await appendFile(sc, remotePath, token);
         }
 
         /// <summary>
-        /// Opens an FSDataOutputStream at the indicated Path. Files are overwritten by default.
+        /// Opens an FSDataOutputStream at the indicated Path.
         /// </summary>
-        /// <param name="content"></param>
+        /// <param name="byteArray"></param>
         /// <param name="remotePath"></param>
         /// <param name="token"></param>
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
         public async Task<bool> AppendFile(byte[] byteArray, string remotePath, CancellationToken token = default(CancellationToken))
         {
             var content = new ByteArrayContent(byteArray);
-            return await AppendFile(content, remotePath, token);
+            return await appendFile(content, remotePath, token);
         }
 
-        private async Task<bool> AppendFile(HttpContent content, string remotePath, CancellationToken token)
+        /// <summary>
+        /// Opens an FSDataOutputStream at the indicated Path.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="encoding">If null Utf8 will be used</param>
+        /// <param name="remotePath"></param>
+        /// <param name="token"></param>
+        /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
+        public async Task<bool> AppendFile(string text, Encoding encoding, string remotePath, CancellationToken token = default(CancellationToken))
+        {
+            var content = new ByteArrayContent((encoding ?? Encoding.UTF8).GetBytes(text));
+            return await appendFile(content, remotePath, token);
+        }
+
+        private async Task<bool> appendFile(HttpContent content, string remotePath, CancellationToken token)
         {
             var addingUrl = prepareUrl(remotePath, "APPEND");
             var location = await getRedirectLocation(addingUrl, HttpMethod.Post, token);
@@ -495,6 +616,7 @@ namespace WebHdfs
         }
         #endregion
 
+        #region comunication
         private Task<T> callWebHDFS<T>(string path, string operation, HttpMethod method, HttpContent content = null, object additionalQueryParameters = null) where T : IJObject, new()
         {
             return callWebHDFS<T>(path, operation, content, new WebHdfsRequestOptions() { Method = method, AdditionalQueryParameters = additionalQueryParameters });
@@ -594,6 +716,21 @@ namespace WebHdfs
                 return response.Headers.Location;
             }
         }
+        #endregion
+
+        #region helpers
+
+        private bool throwIfPermissionsNotValide(string permissions)
+        {
+            if (Regex.IsMatch(permissions, "^[01][0-7]{0,3}$"))
+            {
+                throw new ArgumentException(nameof(permissions), "The value must be any radix-8 integer between 0 and 1777.");
+            }
+
+            return true;
+        }
+
+        #endregion
 
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls

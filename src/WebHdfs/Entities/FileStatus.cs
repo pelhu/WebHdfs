@@ -6,7 +6,7 @@ namespace WebHdfs.Entities
     /// Directory info.
     /// </summary>
     /// <inheritdoc cref="IJObject" />
-    public class DirectoryEntry : IJObject
+    public class FileStatus : IJObject
     {
         /// <summary>
         /// The access time.

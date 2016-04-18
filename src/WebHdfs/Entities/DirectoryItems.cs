@@ -9,16 +9,16 @@ namespace WebHdfs.Entities
     /// Entity for Directory listing.
     /// </summary>
     /// <inheritdoc cref="IJObject" />
-    public class DirectoryListing : IJObject
+    public class DirectoryItems : IJObject
     {
-        IEnumerable<DirectoryEntry> directoryEntries;
+        IEnumerable<FileStatus> directoryEntries;
 
         /// <inheritdoc />
         public void Parse(JObject rootEntry)
         {
             directoryEntries = rootEntry.Value<JObject>("FileStatuses").Value<JArray>("FileStatus").Select(fs =>
             {
-                var d = new DirectoryEntry();
+                var d = new FileStatus();
                 d.Parse(fs.Value<JObject>());
                 return d;
             });
@@ -27,13 +27,13 @@ namespace WebHdfs.Entities
         /// <summary>
         /// List of subdirectories 
         /// </summary>
-        public IEnumerable<DirectoryEntry> Directories
+        public IEnumerable<FileStatus> Directories
         { get { return directoryEntries.Where(fs => fs.Type == "DIRECTORY"); } }
 
         /// <summary>
         /// List of files
         /// </summary>
-        public IEnumerable<DirectoryEntry> Files
+        public IEnumerable<FileStatus> Files
         { get { return directoryEntries.Where(fs => fs.Type == "FILE"); } }
     }
 }
