@@ -74,15 +74,15 @@ namespace WebHdfs
         //    }
         //}
 
-        //private string GetFullyQualifiedPath(string path)
+        //private string GetFullyQualifiedPath(string remotePath)
         //{
-        //    if (path.Contains(":"))
+        //    if (remotePath.Contains(":"))
         //    {
-        //        return path;
+        //        return remotePath;
         //    }
 
-        //    path = GetAbsolutePath(path);
-        //    return "hdfs://" + BaseUrl + path;
+        //    remotePath = GetAbsolutePath(remotePath);
+        //    return "hdfs://" + BaseUrl + remotePath;
         //}
 
         /// <summary>
@@ -115,13 +115,13 @@ namespace WebHdfs
         /// <summary>
         /// List the statuses of the files/directories in the given path if the path is a directory. 
         /// </summary>
-        /// <param name="path">The string representation a Path.</param>
+        /// <param name="remotePath">The string representation a Path.</param>
         /// <returns></returns>
-        public async Task<DirectoryItems> GetDirectoryItems(string path)
+        public async Task<DirectoryItems> GetDirectoryItems(string remotePath)
         {
             try
             {
-                return await callWebHDFS<DirectoryItems>(path, "LISTSTATUS", HttpMethod.Get);
+                return await callWebHDFS<DirectoryItems>(remotePath, "LISTSTATUS", HttpMethod.Get);
             }
             catch (WebHdfs.WebHdfsException ex) when (ex.Response?.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
@@ -132,13 +132,13 @@ namespace WebHdfs
         /// <summary>
         /// Return a file status object that represents the path.
         /// </summary>
-        /// <param name="path">The string representation a Path.</param>
+        /// <param name="remotePath">The string representation a Path.</param>
         /// <returns></returns>
-        public async Task<FileStatus> GetStatus(string path)
+        public async Task<FileStatus> GetStatus(string remotePath)
         {
             try
             {
-                return await callWebHDFS<FileStatus>(path, "GETFILESTATUS", HttpMethod.Get);
+                return await callWebHDFS<FileStatus>(remotePath, "GETFILESTATUS", HttpMethod.Get);
             }
             catch (WebHdfs.WebHdfsException ex) when (ex.Response?.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
@@ -146,11 +146,11 @@ namespace WebHdfs
             }
         }
 
-        public async Task<bool> Exists(string path)
+        public async Task<bool> Exists(string remotePath)
         {
             try
             {
-                var dummy = await callWebHDFS<FileStatus>(path, "GETFILESTATUS", HttpMethod.Get);
+                var dummy = await callWebHDFS<FileStatus>(remotePath, "GETFILESTATUS", HttpMethod.Get);
                 return true;
             }
             catch (WebHdfs.WebHdfsException ex) when (ex.Response?.StatusCode == System.Net.HttpStatusCode.NotFound)
@@ -181,13 +181,13 @@ namespace WebHdfs
         /// <summary>
         /// Return the ContentSummary of a given Path
         /// </summary>
-        /// <param name="path">The string representation a Path.</param>
+        /// <param name="remotePath">The string representation a Path.</param>
         /// <returns></returns>
-        public async Task<ContentSummary> GetContentSummary(string path)
+        public async Task<ContentSummary> GetContentSummary(string remotePath)
         {
             try
             {
-                return await callWebHDFS<ContentSummary>(path, "GETCONTENTSUMMARY", HttpMethod.Get);
+                return await callWebHDFS<ContentSummary>(remotePath, "GETCONTENTSUMMARY", HttpMethod.Get);
             }
             catch (WebHdfs.WebHdfsException ex) when (ex.Response?.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
@@ -198,14 +198,14 @@ namespace WebHdfs
         /// <summary>
         /// Get the checksum of a file
         /// </summary>
-        /// <param name="path">The file checksum. The default return value is null, which 
+        /// <param name="remotePath">The file checksum. The default return value is null, which 
         /// indicates that no checksum algorithm is implemented in the corresponding FileSystem. </param>
         /// <returns></returns>
-        public async Task<FileChecksum> GetFileChecksum(string path)
+        public async Task<FileChecksum> GetFileChecksum(string remotePath)
         {
             try
             {
-                return await callWebHDFS<FileChecksum>(path, "GETFILECHECKSUM", HttpMethod.Get);
+                return await callWebHDFS<FileChecksum>(remotePath, "GETFILECHECKSUM", HttpMethod.Get);
             }
             catch (WebHdfs.WebHdfsException ex) when (ex.Response?.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
@@ -216,36 +216,36 @@ namespace WebHdfs
         /// <summary>
         /// Opens an FSDataInputStream at the indicated Path
         /// </summary>
-        /// <param name="path">The string representation a Path.</param>
+        /// <param name="remotePath">The string representation a Path.</param>
         /// <returns>Async <see cref="Task{Stream}"/> with file content.</returns>
-        public async Task<Stream> OpenFile(string path)
+        public async Task<Stream> OpenFile(string remotePath)
         {
-            return await OpenFile(path, -1, -1, CancellationToken.None);
+            return await OpenFile(remotePath, -1, -1, CancellationToken.None);
         }
 
         /// <summary>
         /// Opens an FSDataInputStream at the indicated Path
         /// </summary>
-        /// <param name="path">The string representation a Path.</param>
+        /// <param name="remotePath">The string representation a Path.</param>
         /// <param name="token"><see cref="CancellationToken"/> to cancel call if needed.</param>
         /// <returns>Async <see cref="Task{Stream}"/> with file content.</returns>
-        public async Task<Stream> OpenFile(string path, CancellationToken token)
+        public async Task<Stream> OpenFile(string remotePath, CancellationToken token)
         {
-            return await OpenFile(path, -1, -1, token);
+            return await OpenFile(remotePath, -1, -1, token);
         }
 
         /// <summary>
         /// Opens an FSDataInputStream at the indicated Path.  The offset and length will allow 
         /// you to get a subset of the file.  
         /// </summary>
-        /// <param name="path">The string representation a Path.</param>
+        /// <param name="remotePath">The string representation a Path.</param>
         /// <param name="offset">The starting byte position. This includes any header bytes</param>
         /// <param name="length">The number of bytes to be processed.</param>
         /// <param name="token"><see cref="CancellationToken"/> to cancel call if needed.</param>
         /// <returns>Async <see cref="Task{Stream}"/> with file content.</returns>
-        public async Task<Stream> OpenFile(string path, int offset = 0, int length = -1, CancellationToken token = default(CancellationToken))
+        public async Task<Stream> OpenFile(string remotePath, int offset = 0, int length = -1, CancellationToken token = default(CancellationToken))
         {
-            string uri = prepareUrl(path, "OPEN");
+            string uri = prepareUrl(remotePath, "OPEN");
             if (offset > 0)
                 uri += uri.SetQueryParam("offset", offset.ToString());
             if (length > 0)
@@ -259,16 +259,16 @@ namespace WebHdfs
         /// <summary>
         /// Download a file from HDFS
         /// </summary>
-        /// <param name="sourcePath"></param>
+        /// <param name="remotePath"></param>
         /// <param name="destinationPath"></param>
         /// <param name="overwrite"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public async Task<bool> DownloadFile(string sourcePath, string destinationPath, bool overwrite = false, CancellationToken token = default(CancellationToken))
+        public async Task<bool> DownloadFile(string remotePath, string destinationPath, bool overwrite = false, CancellationToken token = default(CancellationToken))
         {
-            if (string.IsNullOrWhiteSpace(sourcePath))
+            if (string.IsNullOrWhiteSpace(remotePath))
             {
-                throw new ArgumentException("Path must not be empty", nameof(sourcePath));
+                throw new ArgumentException("Path must not be empty", nameof(remotePath));
             }
 
             if (string.IsNullOrWhiteSpace(destinationPath))
@@ -281,7 +281,7 @@ namespace WebHdfs
                 throw new IOException("Destination file already exists.");
             }
 
-            using (var inputStream = await OpenFile(sourcePath))
+            using (var inputStream = await OpenFile(remotePath))
             {
                 using (var outputStream = File.OpenWrite(destinationPath))
                 {
@@ -295,37 +295,42 @@ namespace WebHdfs
         /// <summary>
         /// Download a directory from HDFS
         /// </summary>
-        /// <param name="sourcePath"></param>
-        /// <param name="destinationPath"></param>
+        /// <param name="remoteDirectory"></param>
+        /// <param name="localDirectory"></param>
         /// <param name="overwrite"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public async Task<bool> DownloadDirectory(string sourceDirectory, string destinationDirectory, bool overwrite = false, CancellationToken token = default(CancellationToken))
+        public async Task<bool> DownloadDirectory(string remoteDirectory, string localDirectory, bool overwrite = false, CancellationToken token = default(CancellationToken))
         {
-            if (string.IsNullOrWhiteSpace(sourceDirectory))
+            if (string.IsNullOrWhiteSpace(remoteDirectory))
             {
-                throw new ArgumentException("Path must not be empty", nameof(sourceDirectory));
+                throw new ArgumentException("Path must not be empty", nameof(remoteDirectory));
             }
 
-            if (string.IsNullOrWhiteSpace(destinationDirectory))
+            if (string.IsNullOrWhiteSpace(localDirectory))
             {
-                throw new ArgumentException("Path must not be empty", nameof(destinationDirectory));
+                throw new ArgumentException("Path must not be empty", nameof(localDirectory));
             }
 
-            var list = await GetDirectoryStatus(sourceDirectory);
+            Directory.CreateDirectory(localDirectory);
+
+            var list = await GetDirectoryItems(remoteDirectory);
+
+            if (list == null)
+            {
+                throw new DirectoryNotFoundException($"Directory \"{remoteDirectory}\" not exists");
+            }
 
             foreach (var file in list.Files)
             {
-                await DownloadFile(sourceDirectory.AppendPathSegment(file.PathSuffix), Path.Combine(destinationDirectory, file.PathSuffix), overwrite);
+                await DownloadFile(remoteDirectory.AppendPathSegment(file.PathSuffix), Path.Combine(localDirectory, file.PathSuffix), overwrite);
             }
 
             foreach (var childDir in list.Directories)
             {
-                var childDestDir = Path.Combine(destinationDirectory, childDir.PathSuffix);
+                var childDestDir = Path.Combine(localDirectory, childDir.PathSuffix);
 
-                Directory.CreateDirectory(childDestDir);
-
-                await DownloadDirectory(sourceDirectory.AppendPathSegment(childDir.PathSuffix), childDestDir, overwrite);
+                await DownloadDirectory(remoteDirectory.AppendPathSegment(childDir.PathSuffix), childDestDir, overwrite);
             }
 
             return true;
@@ -338,27 +343,27 @@ namespace WebHdfs
         /// Make the given file and all non-existent parents into directories. 
         /// Has the semantics of Unix 'mkdir -p'. Existence of the directory hierarchy is not an error. 
         /// </summary>
-        /// <param name="path">The string representation a Path.</param>
+        /// <param name="remotePath">The string representation a Path.</param>
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
-        public async Task<bool> CreateDirectory(string path, string permissions = _defaultPermissions)
+        public async Task<bool> CreateDirectory(string remotePath, string permissions = _defaultPermissions)
         {
             object additionalQueryParameters = null;
             throwIfPermissionsNotValide(permissions);
             additionalQueryParameters = new { permission = permissions };
 
-            var result = await callWebHDFS<BooleanResult>(path, "MKDIRS", HttpMethod.Put, additionalQueryParameters: additionalQueryParameters);
+            var result = await callWebHDFS<BooleanResult>(remotePath, "MKDIRS", HttpMethod.Put, additionalQueryParameters: additionalQueryParameters);
             return result.Value;
         }
 
         /// <summary>
         /// Renames Path src to Path dst.
         /// </summary>
-        /// <param name="path">The string representation a Path.</param>
-        /// <param name="newPath"></param>
+        /// <param name="remotePath">The string representation a Path.</param>
+        /// <param name="newRemotePath"></param>
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
-        public async Task<bool> Rename(string path, string newPath)
+        public async Task<bool> Rename(string remotePath, string newRemotePath)
         {
-            var result = await callWebHDFS<BooleanResult>(path, "RENAME", HttpMethod.Put, additionalQueryParameters: new { destination = newPath });
+            var result = await callWebHDFS<BooleanResult>(remotePath, "RENAME", HttpMethod.Put, additionalQueryParameters: new { destination = newRemotePath });
             return result.Value;
         }
 
@@ -366,24 +371,24 @@ namespace WebHdfs
         /// Delete a file.  Note, this will not recursively delete and will
         /// not delete if directory is not empty
         /// </summary>
-        /// <param name="path">the path to delete</param>
+        /// <param name="remotePath">the path to delete</param>
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
-        public async Task<bool> Delete(string path)
+        public async Task<bool> Delete(string remotePath)
         {
-            return await Delete(path, false);
+            return await Delete(remotePath, false);
         }
 
 
         /// <summary>
         /// Delete a file
         /// </summary>
-        /// <param name="path">the path to delete</param>
+        /// <param name="remotePath">the path to delete</param>
         /// <param name="recursive">if path is a directory and set to true, the directory is deleted else throws an exception.
         /// In case of a file the recursive can be set to either true or false. </param>
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
-        public async Task<bool> Delete(string path, bool recursive)
+        public async Task<bool> Delete(string remotePath, bool recursive)
         {
-            var result = await callWebHDFS<BooleanResult>(path, "DELETE", HttpMethod.Delete, additionalQueryParameters: new { recursive = recursive.ToString().ToLower() });
+            var result = await callWebHDFS<BooleanResult>(remotePath, "DELETE", HttpMethod.Delete, additionalQueryParameters: new { recursive = recursive.ToString().ToLower() });
             return result.Value;
         }
         #endregion
@@ -393,76 +398,76 @@ namespace WebHdfs
         /// <summary>
         /// Set permission of a path.
         /// </summary>
-        /// <param name="path">The string representation a Path.</param>
+        /// <param name="remotePath">The string representation a Path.</param>
         /// <param name="permissions"></param>
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
-        public async Task<bool> SetPermissions(string path, string permissions)
+        public async Task<bool> SetPermissions(string remotePath, string permissions)
         {
             throwIfPermissionsNotValide(permissions);
 
-            var result = await callWebHDFS<BooleanResult>(path, "SETPERMISSION", HttpMethod.Put, additionalQueryParameters: new { permission = permissions });
+            var result = await callWebHDFS<BooleanResult>(remotePath, "SETPERMISSION", HttpMethod.Put, additionalQueryParameters: new { permission = permissions });
             return result.Value;
         }
 
         /// <summary>
         /// Sets the owner for the file 
         /// </summary>
-        /// <param name="path">The string representation a Path.</param>
+        /// <param name="remotePath">The string representation a Path.</param>
         /// <param name="owner">If it is null, the original username remains unchanged</param>
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
-        public async Task<bool> SetOwner(string path, string owner)
+        public async Task<bool> SetOwner(string remotePath, string owner)
         {
-            var result = await callWebHDFS<BooleanResult>(path, "SETOWNER", HttpMethod.Put, additionalQueryParameters: new { owner = owner });
+            var result = await callWebHDFS<BooleanResult>(remotePath, "SETOWNER", HttpMethod.Put, additionalQueryParameters: new { owner = owner });
             return result.Value;
         }
 
         /// <summary>
         /// Sets the group for the file 
         /// </summary>
-        /// <param name="path">The string representation a Path.</param>
+        /// <param name="remotePath">The string representation a Path.</param>
         /// <param name="group">If it is null, the original groupname remains unchanged</param>
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
-        public async Task<bool> SetGroup(string path, string group)
+        public async Task<bool> SetGroup(string remotePath, string group)
         {
-            var result = await callWebHDFS<BooleanResult>(path, "SETOWNER", HttpMethod.Put, additionalQueryParameters: new { group = group });
+            var result = await callWebHDFS<BooleanResult>(remotePath, "SETOWNER", HttpMethod.Put, additionalQueryParameters: new { group = group });
             return result.Value;
         }
 
         /// <summary>
         /// Set replication for an existing file.
         /// </summary>
-        /// <param name="path">The string representation a Path.</param>
+        /// <param name="remotePath">The string representation a Path.</param>
         /// <param name="replicationFactor"></param>
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
-        public async Task<bool> SetReplicationFactor(string path, int replicationFactor)
+        public async Task<bool> SetReplicationFactor(string remotePath, int replicationFactor)
         {
-            var result = await callWebHDFS<BooleanResult>(path, "SETREPLICATION", HttpMethod.Put, additionalQueryParameters: new { replication = replicationFactor });
+            var result = await callWebHDFS<BooleanResult>(remotePath, "SETREPLICATION", HttpMethod.Put, additionalQueryParameters: new { replication = replicationFactor });
             return result.Value;
         }
 
         /// <summary>
         /// Set access time of a file
         /// </summary>
-        /// <param name="path">The string representation a Path.</param>
+        /// <param name="remotePath">The string representation a Path.</param>
         /// <param name="accessTime">Set the access time of this file. The number of milliseconds since Jan 1, 1970. 
         /// A value of -1 means that this call should not set access time</param>
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
-        public async Task<bool> SetAccessTime(string path, string accessTime)
+        public async Task<bool> SetAccessTime(string remotePath, string accessTime)
         {
-            var result = await callWebHDFS<BooleanResult>(path, "SETTIMES", HttpMethod.Put, additionalQueryParameters: new { accesstime = accessTime });
+            var result = await callWebHDFS<BooleanResult>(remotePath, "SETTIMES", HttpMethod.Put, additionalQueryParameters: new { accesstime = accessTime });
             return result.Value;
         }
 
         /// <summary>
         /// Set modification time of a file
         /// </summary>
-        /// <param name="path">The string representation a Path.</param>
+        /// <param name="remotePath">The string representation a Path.</param>
         /// <param name="modificationTime">Set the modification time of this file. The number of milliseconds since Jan 1, 1970.
         /// A value of -1 means that this call should not set modification time</param>
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
-        public async Task<bool> SetModificationTime(string path, string modificationTime)
+        public async Task<bool> SetModificationTime(string remotePath, string modificationTime)
         {
-            var result = await callWebHDFS<BooleanResult>(path, "SETTIMES", HttpMethod.Put, additionalQueryParameters: new { modificationtime = modificationTime });
+            var result = await callWebHDFS<BooleanResult>(remotePath, "SETTIMES", HttpMethod.Put, additionalQueryParameters: new { modificationtime = modificationTime });
             return result.Value;
         }
         #endregion
@@ -476,11 +481,42 @@ namespace WebHdfs
         /// <param name="overwrite"></param>
         /// <param name="token"></param>
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
-        public async Task<bool> CreateFile(string localFile, string remotePath, bool overwrite = false, string permissions = _defaultPermissions, CancellationToken token = default(CancellationToken))
+        public async Task<bool> UploadFile(string localFile, string remotePath, bool overwrite = false, string permissions = _defaultPermissions, CancellationToken token = default(CancellationToken))
         {
             var sc = new StreamContent(File.OpenRead(localFile));
             return await createFile(sc, remotePath, overwrite, permissions, token);
         }
+
+        public async Task<bool> UploadDirectory(string localDirectory, string remoteDirectory, bool overwrite = false, CancellationToken token = default(CancellationToken))
+        {
+            if (string.IsNullOrWhiteSpace(localDirectory))
+            {
+                throw new ArgumentException("Path must not be empty", nameof(localDirectory));
+            }
+
+            if (string.IsNullOrWhiteSpace(remoteDirectory))
+            {
+                throw new ArgumentException("Path must not be empty", nameof(remoteDirectory));
+            }
+
+            if (!Directory.Exists(localDirectory))
+            {
+                throw new DirectoryNotFoundException($"Directory \"{localDirectory}\" not exists");
+            }
+
+            foreach (var file in Directory.GetFiles(localDirectory))
+            {
+                await UploadFile(file, remoteDirectory.AppendPathSegment(Path.GetFileName(file)));
+            }
+
+            foreach (var dir in Directory.GetDirectories(localDirectory))
+            {
+                await UploadDirectory(dir, remoteDirectory.AppendPathSegment(Path.GetDirectoryName(dir)));
+            }
+
+            return true;
+        }
+
 
         /// <summary>
         /// Opens an FSDataOutputStream at the indicated Path.
@@ -511,7 +547,7 @@ namespace WebHdfs
             var sc = new ByteArrayContent(byteArray);
             return await createFile(sc, remotePath, overwrite, permissions, token);
         }
-        
+
         /// <summary>
         /// Opens an FSDataOutputStream at the indicated Path.
         /// </summary>
@@ -617,14 +653,14 @@ namespace WebHdfs
         #endregion
 
         #region comunication
-        private Task<T> callWebHDFS<T>(string path, string operation, HttpMethod method, HttpContent content = null, object additionalQueryParameters = null) where T : IJObject, new()
+        private Task<T> callWebHDFS<T>(string remotePath, string operation, HttpMethod method, HttpContent content = null, object additionalQueryParameters = null) where T : IJObject, new()
         {
-            return callWebHDFS<T>(path, operation, content, new WebHdfsRequestOptions() { Method = method, AdditionalQueryParameters = additionalQueryParameters });
+            return callWebHDFS<T>(remotePath, operation, content, new WebHdfsRequestOptions() { Method = method, AdditionalQueryParameters = additionalQueryParameters });
         }
 
-        private async Task<T> callWebHDFS<T>(string path, string operation, HttpContent content = null, WebHdfsRequestOptions options = null) where T : IJObject, new()
+        private async Task<T> callWebHDFS<T>(string remotePath, string operation, HttpContent content = null, WebHdfsRequestOptions options = null) where T : IJObject, new()
         {
-            string uri = prepareUrl(path, operation, options.AdditionalQueryParameters);
+            string uri = prepareUrl(remotePath, operation, options.AdditionalQueryParameters);
 
             var response = await getResponseMessageAsync(uri, content, options ?? new WebHdfsRequestOptions());
 
@@ -650,21 +686,21 @@ namespace WebHdfs
             return default(T);
         }
 
-        private string prepareUrl(string path, string operation, object additionalQueryParameters = null)
+        private string prepareUrl(string remotePath, string operation, object additionalQueryParameters = null)
         {
-            if (string.IsNullOrWhiteSpace(path)) path = "";
+            if (string.IsNullOrWhiteSpace(remotePath)) remotePath = "";
 
-            path = path.SetQueryParam("op", operation);
+            remotePath = remotePath.SetQueryParam("op", operation);
 
             if (!string.IsNullOrEmpty(User))
-                path = path.SetQueryParam("user.name", User);
+                remotePath = remotePath.SetQueryParam("user.name", User);
 
             if (additionalQueryParameters != null)
             {
-                path = path.SetQueryParams(additionalQueryParameters);
+                remotePath = remotePath.SetQueryParams(additionalQueryParameters);
             }
 
-            return path;
+            return remotePath;
         }
 
         /// <summary>
