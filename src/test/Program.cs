@@ -38,7 +38,9 @@ namespace test
 
             //return;
 
-            testCreate().Wait();
+            var a = GetW().UploadDirectory(@"C:\!temp\testHdfs", "testHdfs", true).Result;
+
+            //testCreate().Wait();
             //testAppend().Wait();
             //testAppendFile().Wait();
             //testRead().Wait();
@@ -50,11 +52,11 @@ namespace test
         {
             var w = GetW();
 
-            var ds = await w.GetDirectoryStatus("khamzat_test2");
+            var ds = await w.GetDirectoryItems("khamzat_test2");
 
-            var inpuıtPath = @"c:\!temp\testHdfs\";
+            var inputPath = @"c:\!temp\testHdfs\";
 
-            Directory.GetFiles(inpuıtPath).ToList().ForEach(f => File.Delete(f));
+            Directory.GetFiles(inputPath).ToList().ForEach(f => File.Delete(f));
 
             var sw = new Stopwatch();
             var tasks = new List<Task>();
@@ -65,7 +67,7 @@ namespace test
                 {
                     using (var r = await w.OpenFile("khamzat_test2/" + item.PathSuffix))
                     {
-                        using (var f = File.OpenWrite(Path.Combine(inpuıtPath, item.PathSuffix)))
+                        using (var f = File.OpenWrite(Path.Combine(inputPath, item.PathSuffix)))
                         {
                             await r.CopyToAsync(f);
                         }
@@ -88,7 +90,7 @@ namespace test
         {
             var w = GetW();
 
-            var ds = await w.GetDirectoryStatus("khamzat_test2");
+            var ds = await w.GetDirectoryItems("khamzat_test2");
 
             var byteArrayLength = 10000000;
 
@@ -116,7 +118,7 @@ namespace test
 
             var w = GetW();
 
-            var ds = await w.GetDirectoryStatus("khamzat_test2");
+            var ds = await w.GetDirectoryItems("khamzat_test2");
 
             var fileInfo = new FileInfo(@"c:\!temp\dotnet-apiport-master.rar");
 
@@ -139,7 +141,7 @@ namespace test
             
             var fileInfo = new FileInfo(@"c:\!temp\syslog8");
 
-            var ds = await w.GetDirectoryStatus("khamzat_test2");
+            var ds = await w.GetDirectoryItems("khamzat_test2");
             if (ds!=null)
             {
                 foreach (var item in ds.Files.Where(f => f.PathSuffix.StartsWith(fileInfo.Name)))
@@ -155,7 +157,7 @@ namespace test
             sw.Start();
             for (int i = 0; i < count; i++)
             {
-                await w.CreateFile(fileInfo.FullName, $"khamzat_test2/{fileInfo.Name}_{(i + 1)}", true);
+                await w.UploadFile(fileInfo.FullName, $"khamzat_test2/{fileInfo.Name}_{(i + 1)}", true);
                 //tasks.Add(w.CreateFile(fileInfo.FullName, $"khamzat_test2/{fileInfo.Name}_{(i + 1)}", true));
 
                 //w.CreateFile(fileInfo.FullName, $"khamzat_test/{fileInfo.Name}_{(i + 1)}", true).ContinueWith(t =>

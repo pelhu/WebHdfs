@@ -44,7 +44,7 @@ namespace WebHdfs
 
         public string Prefix { get; private set; }
 
-        const string _defaultPrefix = "webhdfs/v1";
+        const string _defaultPrefix = "/webhdfs/v1/";
         const string _defaultPermissions = "755";
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace WebHdfs
         public WebHdfsClient(HttpMessageHandler handler, string baseUrl, string user = null, string prefix = _defaultPrefix)
         {
             InnerHandler = handler;
-            httpClient = new HttpClient(handler) { BaseAddress = new Uri(baseUrl) };
+            httpClient = new HttpClient(handler) { BaseAddress = new Uri(baseUrl.AppendPathSegment(prefix)) };
             User = user;
             Prefix = prefix;
             //GetHomeDirectory().Wait();

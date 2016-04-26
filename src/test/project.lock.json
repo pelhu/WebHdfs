@@ -73,7 +73,7 @@
           "lib/net45/_._": {}
         }
       },
-      "WebHdfs/1.0.0": {
+      "WebHdfs/0.9.0-rc": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.5.1",
         "dependencies": {
@@ -803,7 +803,7 @@
           "lib/netstandard1.3/System.Xml.XDocument.dll": {}
         }
       },
-      "WebHdfs/1.0.0": {
+      "WebHdfs/0.9.0-rc": {
         "type": "project",
         "framework": "DNXCore,Version=v5.0",
         "dependencies": {
@@ -885,7 +885,7 @@
           "lib/net45/_._": {}
         }
       },
-      "WebHdfs/1.0.0": {
+      "WebHdfs/0.9.0-rc": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.5.1",
         "dependencies": {
@@ -967,7 +967,7 @@
           "lib/net45/_._": {}
         }
       },
-      "WebHdfs/1.0.0": {
+      "WebHdfs/0.9.0-rc": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.5.1",
         "dependencies": {
@@ -2561,7 +2561,7 @@
           "lib/netstandard1.3/System.Xml.XDocument.dll": {}
         }
       },
-      "WebHdfs/1.0.0": {
+      "WebHdfs/0.9.0-rc": {
         "type": "project",
         "framework": "DNXCore,Version=v5.0",
         "dependencies": {
@@ -4162,7 +4162,7 @@
           "lib/netstandard1.3/System.Xml.XDocument.dll": {}
         }
       },
-      "WebHdfs/1.0.0": {
+      "WebHdfs/0.9.0-rc": {
         "type": "project",
         "framework": "DNXCore,Version=v5.0",
         "dependencies": {
@@ -4175,7 +4175,7 @@
     }
   },
   "libraries": {
-    "WebHdfs/1.0.0": {
+    "WebHdfs/0.9.0-rc": {
       "type": "project",
       "path": "../WebHdfs/project.json"
     },
