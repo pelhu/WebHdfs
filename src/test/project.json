@@ -17,7 +17,7 @@
     "dependencies": {
         "Newtonsoft.Json": "8.0.3",
         "Microsoft.NETCore.Portable.Compatibility": "1.0.1-rc2-23910",
-        "WebHdfs": "1.0.0-*"
+        "WebHdfs.Core": "0.9.1-rc"
     },
 
     "frameworks": {

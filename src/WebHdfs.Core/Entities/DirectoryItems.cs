@@ -3,7 +3,7 @@ using System;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 
-namespace WebHdfs.Entities
+namespace WebHdfs.Core.Entities
 {
     /// <summary>
     /// Entity for Directory listing.

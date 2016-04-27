@@ -4,7 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace WebHdfs
+namespace WebHdfs.Core
 {
     public class WebHdfsException : Exception
     {

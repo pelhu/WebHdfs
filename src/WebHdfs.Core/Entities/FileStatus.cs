@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 
-namespace WebHdfs.Entities
+namespace WebHdfs.Core.Entities
 {
     /// <summary>
     /// Directory info.

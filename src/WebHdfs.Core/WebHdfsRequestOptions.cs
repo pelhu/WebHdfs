@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace WebHdfs
+namespace WebHdfs.Core
 {
     /// <summary>
     /// Опции запроса

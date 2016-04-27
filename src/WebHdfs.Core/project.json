@@ -1,10 +1,12 @@
 ﻿{
     "version": "0.9.1-rc",
-    "description": "WebHdfs Class Library",
-    "authors": [ "khamzatsalikhov" ],
-    "tags": [ "" ],
-    "projectUrl": "",
+    "title": "WebHdfs.Core",
+    "description": "WebHdfs client for .Net Core. Forked from https://github.com/justmara/WebHdfs",
+    "authors": [ "Khamzat Salikhov" ],
+    "tags": [ "Hadoop", "Hdfs", "WebHdfs", ".Net", "Core" ],
+    "projectUrl": "https://github.com/pelhu/WebHdfs.Core",
     "licenseUrl": "",
+    "releaseNotes": "",
 
     "dependencies": {
         "Newtonsoft.Json": "8.0.3",

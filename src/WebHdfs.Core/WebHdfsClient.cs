@@ -6,13 +6,13 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
-using WebHdfs.Entities;
+using WebHdfs.Core.Entities;
 using System.Text;
 using System.Text.RegularExpressions;
 using Flurl;
 using System.Collections.Generic;
 
-namespace WebHdfs
+namespace WebHdfs.Core
 {
     /// <summary>
     /// Minimalistic WebHdfs client
@@ -123,7 +123,7 @@ namespace WebHdfs
             {
                 return await callWebHDFS<DirectoryItems>(remotePath, "LISTSTATUS", HttpMethod.Get);
             }
-            catch (WebHdfs.WebHdfsException ex) when (ex.Response?.StatusCode == System.Net.HttpStatusCode.NotFound)
+            catch (WebHdfsException ex) when (ex.Response?.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
                 return null;
             }
@@ -140,7 +140,7 @@ namespace WebHdfs
             {
                 return await callWebHDFS<FileStatus>(remotePath, "GETFILESTATUS", HttpMethod.Get);
             }
-            catch (WebHdfs.WebHdfsException ex) when (ex.Response?.StatusCode == System.Net.HttpStatusCode.NotFound)
+            catch (WebHdfsException ex) when (ex.Response?.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
                 return null;
             }
@@ -153,7 +153,7 @@ namespace WebHdfs
                 var dummy = await callWebHDFS<FileStatus>(remotePath, "GETFILESTATUS", HttpMethod.Get);
                 return true;
             }
-            catch (WebHdfs.WebHdfsException ex) when (ex.Response?.StatusCode == System.Net.HttpStatusCode.NotFound)
+            catch (WebHdfsException ex) when (ex.Response?.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
                 return false;
             }
@@ -189,7 +189,7 @@ namespace WebHdfs
             {
                 return await callWebHDFS<ContentSummary>(remotePath, "GETCONTENTSUMMARY", HttpMethod.Get);
             }
-            catch (WebHdfs.WebHdfsException ex) when (ex.Response?.StatusCode == System.Net.HttpStatusCode.NotFound)
+            catch (WebHdfsException ex) when (ex.Response?.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
                 return null;
             }
@@ -207,7 +207,7 @@ namespace WebHdfs
             {
                 return await callWebHDFS<FileChecksum>(remotePath, "GETFILECHECKSUM", HttpMethod.Get);
             }
-            catch (WebHdfs.WebHdfsException ex) when (ex.Response?.StatusCode == System.Net.HttpStatusCode.NotFound)
+            catch (WebHdfsException ex) when (ex.Response?.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
                 return null;
             }

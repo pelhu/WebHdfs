@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using WebHdfs;
+using WebHdfs.Core;
 
 namespace test
 {
@@ -38,7 +38,7 @@ namespace test
 
             //return;
 
-            var a = GetW().UploadDirectory(@"C:\!temp\testHdfs", "testHdfs", true).Result;
+            //var a = GetW().UploadDirectory(@"C:\!temp\testHdfs", "testHdfs", true).Result;
 
             //testCreate().Wait();
             //testAppend().Wait();
