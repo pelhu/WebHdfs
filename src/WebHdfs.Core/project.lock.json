@@ -3,13 +3,13 @@
   "version": 2,
   "targets": {
     ".NETFramework,Version=v4.5.1": {
-      "Flurl/1.1.1": {
+      "Flurl/2.0.0": {
         "type": "package",
         "compile": {
-          "lib/portable-net40+sl50+win+wpa81+wp80+MonoAndroid10+MonoTouch10/Flurl.dll": {}
+          "lib/portable-net40+win+wpa81+wp80+MonoAndroid10+MonoTouch10/Flurl.dll": {}
         },
         "runtime": {
-          "lib/portable-net40+sl50+win+wpa81+wp80+MonoAndroid10+MonoTouch10/Flurl.dll": {}
+          "lib/portable-net40+win+wpa81+wp80+MonoAndroid10+MonoTouch10/Flurl.dll": {}
         }
       },
       "Microsoft.Bcl/1.1.9": {
@@ -66,17 +66,17 @@
       }
     },
     "DNXCore,Version=v5.0": {
-      "Flurl/1.1.1": {
+      "Flurl/2.0.0": {
         "type": "package",
         "dependencies": {
           "System.Linq": "4.0.0",
           "System.Reflection.TypeExtensions": "4.0.0"
         },
         "compile": {
-          "lib/dotnet5.4/Flurl.NETCore.dll": {}
+          "lib/dotnet5.4/Flurl.dll": {}
         },
         "runtime": {
-          "lib/dotnet5.4/Flurl.NETCore.dll": {}
+          "lib/dotnet5.4/Flurl.dll": {}
         }
       },
       "Microsoft.DotNet.CoreHost/0.0.1-beta-00001": {
@@ -751,13 +751,13 @@
       }
     },
     ".NETFramework,Version=v4.5.1/win7-x86": {
-      "Flurl/1.1.1": {
+      "Flurl/2.0.0": {
         "type": "package",
         "compile": {
-          "lib/portable-net40+sl50+win+wpa81+wp80+MonoAndroid10+MonoTouch10/Flurl.dll": {}
+          "lib/portable-net40+win+wpa81+wp80+MonoAndroid10+MonoTouch10/Flurl.dll": {}
         },
         "runtime": {
-          "lib/portable-net40+sl50+win+wpa81+wp80+MonoAndroid10+MonoTouch10/Flurl.dll": {}
+          "lib/portable-net40+win+wpa81+wp80+MonoAndroid10+MonoTouch10/Flurl.dll": {}
         }
       },
       "Microsoft.Bcl/1.1.9": {
@@ -814,13 +814,13 @@
       }
     },
     ".NETFramework,Version=v4.5.1/win7-x64": {
-      "Flurl/1.1.1": {
+      "Flurl/2.0.0": {
         "type": "package",
         "compile": {
-          "lib/portable-net40+sl50+win+wpa81+wp80+MonoAndroid10+MonoTouch10/Flurl.dll": {}
+          "lib/portable-net40+win+wpa81+wp80+MonoAndroid10+MonoTouch10/Flurl.dll": {}
         },
         "runtime": {
-          "lib/portable-net40+sl50+win+wpa81+wp80+MonoAndroid10+MonoTouch10/Flurl.dll": {}
+          "lib/portable-net40+win+wpa81+wp80+MonoAndroid10+MonoTouch10/Flurl.dll": {}
         }
       },
       "Microsoft.Bcl/1.1.9": {
@@ -877,17 +877,17 @@
       }
     },
     "DNXCore,Version=v5.0/win7-x86": {
-      "Flurl/1.1.1": {
+      "Flurl/2.0.0": {
         "type": "package",
         "dependencies": {
           "System.Linq": "4.0.0",
           "System.Reflection.TypeExtensions": "4.0.0"
         },
         "compile": {
-          "lib/dotnet5.4/Flurl.NETCore.dll": {}
+          "lib/dotnet5.4/Flurl.dll": {}
         },
         "runtime": {
-          "lib/dotnet5.4/Flurl.NETCore.dll": {}
+          "lib/dotnet5.4/Flurl.dll": {}
         }
       },
       "Microsoft.DotNet.CoreHost/0.0.1-beta-00001": {
@@ -2426,17 +2426,17 @@
       }
     },
     "DNXCore,Version=v5.0/win7-x64": {
-      "Flurl/1.1.1": {
+      "Flurl/2.0.0": {
         "type": "package",
         "dependencies": {
           "System.Linq": "4.0.0",
           "System.Reflection.TypeExtensions": "4.0.0"
         },
         "compile": {
-          "lib/dotnet5.4/Flurl.NETCore.dll": {}
+          "lib/dotnet5.4/Flurl.dll": {}
         },
         "runtime": {
-          "lib/dotnet5.4/Flurl.NETCore.dll": {}
+          "lib/dotnet5.4/Flurl.dll": {}
         }
       },
       "Microsoft.DotNet.CoreHost/0.0.1-beta-00001": {
@@ -3983,19 +3983,19 @@
     }
   },
   "libraries": {
-    "Flurl/1.1.1": {
+    "Flurl/2.0.0": {
       "type": "package",
-      "sha512": "cAoZhLOwnc0/u+MfVz+/zi8m9ytHP8c3afB1Zt7nyMW4F6CJADLh2IS0HDihfWakg+vubTE5QjkJlBibjG6Oig==",
+      "sha512": "7yvoh2arCioXljalQR87DccyFMFRGOfKOv0TI8jKNHUJ6K/fkfFPKH0k5AvFqtT3wgorV3Ks8mF/3pj0KwSttg==",
       "files": [
-        "Flurl.1.1.1.nupkg",
-        "Flurl.1.1.1.nupkg.sha512",
+        "Flurl.2.0.0.nupkg",
+        "Flurl.2.0.0.nupkg.sha512",
         "Flurl.nuspec",
-        "lib/dotnet5.4/Flurl.NETCore.dll",
-        "lib/dotnet5.4/Flurl.NETCore.pdb",
-        "lib/dotnet5.4/Flurl.NETCore.xml",
-        "lib/portable-net40+sl50+win+wpa81+wp80+MonoAndroid10+MonoTouch10/Flurl.dll",
-        "lib/portable-net40+sl50+win+wpa81+wp80+MonoAndroid10+MonoTouch10/Flurl.pdb",
-        "lib/portable-net40+sl50+win+wpa81+wp80+MonoAndroid10+MonoTouch10/Flurl.XML"
+        "lib/dotnet5.4/Flurl.dll",
+        "lib/dotnet5.4/Flurl.pdb",
+        "lib/dotnet5.4/Flurl.xml",
+        "lib/portable-net40+win+wpa81+wp80+MonoAndroid10+MonoTouch10/Flurl.dll",
+        "lib/portable-net40+win+wpa81+wp80+MonoAndroid10+MonoTouch10/Flurl.pdb",
+        "lib/portable-net40+win+wpa81+wp80+MonoAndroid10+MonoTouch10/Flurl.XML"
       ]
     },
     "Microsoft.Bcl/1.1.9": {
@@ -8368,7 +8368,7 @@
     "": [
       "Newtonsoft.Json >= 8.0.3",
       "System.Dynamic.Runtime >= 4.0.11-rc2-23910",
-      "Flurl >= 1.1.1"
+      "Flurl >= 2.0.0"
     ],
     ".NETFramework,Version=v4.5.1": [
       "Microsoft.Net.Http >= 2.2.22"

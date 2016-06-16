@@ -3,13 +3,13 @@
   "version": 2,
   "targets": {
     ".NETFramework,Version=v4.5.1": {
-      "Flurl/1.1.1": {
+      "Flurl/2.0.0": {
         "type": "package",
         "compile": {
-          "lib/portable-net40+sl50+win+wpa81+wp80+MonoAndroid10+MonoTouch10/Flurl.dll": {}
+          "lib/portable-net40+win+wpa81+wp80+MonoAndroid10+MonoTouch10/Flurl.dll": {}
         },
         "runtime": {
-          "lib/portable-net40+sl50+win+wpa81+wp80+MonoAndroid10+MonoTouch10/Flurl.dll": {}
+          "lib/portable-net40+win+wpa81+wp80+MonoAndroid10+MonoTouch10/Flurl.dll": {}
         }
       },
       "Microsoft.Bcl/1.1.9": {
@@ -73,11 +73,11 @@
           "lib/net45/_._": {}
         }
       },
-      "WebHdfs.Core/0.9.1-rc": {
+      "WebHdfs.Core/0.9.4-rc": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.5.1",
         "dependencies": {
-          "Flurl": "1.1.1",
+          "Flurl": "2.0.0",
           "Microsoft.Net.Http": "2.2.22",
           "Newtonsoft.Json": "8.0.3",
           "System.Dynamic.Runtime": "4.0.11-rc2-23910"
@@ -85,17 +85,17 @@
       }
     },
     "DNXCore,Version=v5.0": {
-      "Flurl/1.1.1": {
+      "Flurl/2.0.0": {
         "type": "package",
         "dependencies": {
           "System.Linq": "4.0.0",
           "System.Reflection.TypeExtensions": "4.0.0"
         },
         "compile": {
-          "lib/dotnet5.4/Flurl.NETCore.dll": {}
+          "lib/dotnet5.4/Flurl.dll": {}
         },
         "runtime": {
-          "lib/dotnet5.4/Flurl.NETCore.dll": {}
+          "lib/dotnet5.4/Flurl.dll": {}
         }
       },
       "Microsoft.DotNet.CoreHost/0.0.1-beta-00001": {
@@ -803,11 +803,11 @@
           "lib/netstandard1.3/System.Xml.XDocument.dll": {}
         }
       },
-      "WebHdfs.Core/0.9.1-rc": {
+      "WebHdfs.Core/0.9.4-rc": {
         "type": "project",
         "framework": "DNXCore,Version=v5.0",
         "dependencies": {
-          "Flurl": "1.1.1",
+          "Flurl": "2.0.0",
           "NETStandard.Library": "1.0.0-rc2-23910",
           "Newtonsoft.Json": "8.0.3",
           "System.Dynamic.Runtime": "4.0.11-rc2-23910"
@@ -815,13 +815,13 @@
       }
     },
     ".NETFramework,Version=v4.5.1/win7-x86": {
-      "Flurl/1.1.1": {
+      "Flurl/2.0.0": {
         "type": "package",
         "compile": {
-          "lib/portable-net40+sl50+win+wpa81+wp80+MonoAndroid10+MonoTouch10/Flurl.dll": {}
+          "lib/portable-net40+win+wpa81+wp80+MonoAndroid10+MonoTouch10/Flurl.dll": {}
         },
         "runtime": {
-          "lib/portable-net40+sl50+win+wpa81+wp80+MonoAndroid10+MonoTouch10/Flurl.dll": {}
+          "lib/portable-net40+win+wpa81+wp80+MonoAndroid10+MonoTouch10/Flurl.dll": {}
         }
       },
       "Microsoft.Bcl/1.1.9": {
@@ -885,11 +885,11 @@
           "lib/net45/_._": {}
         }
       },
-      "WebHdfs.Core/0.9.1-rc": {
+      "WebHdfs.Core/0.9.4-rc": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.5.1",
         "dependencies": {
-          "Flurl": "1.1.1",
+          "Flurl": "2.0.0",
           "Microsoft.Net.Http": "2.2.22",
           "Newtonsoft.Json": "8.0.3",
           "System.Dynamic.Runtime": "4.0.11-rc2-23910"
@@ -897,13 +897,13 @@
       }
     },
     ".NETFramework,Version=v4.5.1/win7-x64": {
-      "Flurl/1.1.1": {
+      "Flurl/2.0.0": {
         "type": "package",
         "compile": {
-          "lib/portable-net40+sl50+win+wpa81+wp80+MonoAndroid10+MonoTouch10/Flurl.dll": {}
+          "lib/portable-net40+win+wpa81+wp80+MonoAndroid10+MonoTouch10/Flurl.dll": {}
         },
         "runtime": {
-          "lib/portable-net40+sl50+win+wpa81+wp80+MonoAndroid10+MonoTouch10/Flurl.dll": {}
+          "lib/portable-net40+win+wpa81+wp80+MonoAndroid10+MonoTouch10/Flurl.dll": {}
         }
       },
       "Microsoft.Bcl/1.1.9": {
@@ -967,11 +967,11 @@
           "lib/net45/_._": {}
         }
       },
-      "WebHdfs.Core/0.9.1-rc": {
+      "WebHdfs.Core/0.9.4-rc": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.5.1",
         "dependencies": {
-          "Flurl": "1.1.1",
+          "Flurl": "2.0.0",
           "Microsoft.Net.Http": "2.2.22",
           "Newtonsoft.Json": "8.0.3",
           "System.Dynamic.Runtime": "4.0.11-rc2-23910"
@@ -979,17 +979,17 @@
       }
     },
     "DNXCore,Version=v5.0/win7-x86": {
-      "Flurl/1.1.1": {
+      "Flurl/2.0.0": {
         "type": "package",
         "dependencies": {
           "System.Linq": "4.0.0",
           "System.Reflection.TypeExtensions": "4.0.0"
         },
         "compile": {
-          "lib/dotnet5.4/Flurl.NETCore.dll": {}
+          "lib/dotnet5.4/Flurl.dll": {}
         },
         "runtime": {
-          "lib/dotnet5.4/Flurl.NETCore.dll": {}
+          "lib/dotnet5.4/Flurl.dll": {}
         }
       },
       "Microsoft.DotNet.CoreHost/0.0.1-beta-00001": {
@@ -1657,9 +1657,25 @@
         "type": "package",
         "native": {
           "runtimes/win7-x86/native/API-MS-Win-Base-Util-L1-1-0.dll": {},
+          "runtimes/win7-x86/native/API-MS-Win-Core-Kernel32-Private-L1-1-0.dll": {},
+          "runtimes/win7-x86/native/API-MS-Win-Core-Kernel32-Private-L1-1-1.dll": {},
+          "runtimes/win7-x86/native/API-MS-Win-Core-Kernel32-Private-L1-1-2.dll": {},
+          "runtimes/win7-x86/native/API-MS-Win-Core-PrivateProfile-L1-1-0.dll": {},
+          "runtimes/win7-x86/native/API-MS-Win-Core-ProcessTopology-Obsolete-L1-1-0.dll": {},
+          "runtimes/win7-x86/native/API-MS-Win-Core-StringAnsi-L1-1-0.dll": {},
+          "runtimes/win7-x86/native/API-MS-Win-Core-String-L2-1-0.dll": {},
+          "runtimes/win7-x86/native/API-MS-Win-devices-config-L1-1-0.dll": {},
+          "runtimes/win7-x86/native/API-MS-Win-devices-config-L1-1-1.dll": {},
+          "runtimes/win7-x86/native/API-MS-Win-Eventing-ClassicProvider-L1-1-0.dll": {},
+          "runtimes/win7-x86/native/API-MS-Win-Eventing-Consumer-L1-1-0.dll": {},
+          "runtimes/win7-x86/native/API-MS-Win-Eventing-Controller-L1-1-0.dll": {},
+          "runtimes/win7-x86/native/API-MS-Win-Eventing-Legacy-L1-1-0.dll": {},
+          "runtimes/win7-x86/native/API-MS-Win-Eventing-Provider-L1-1-0.dll": {},
+          "runtimes/win7-x86/native/API-MS-Win-EventLog-Legacy-L1-1-0.dll": {},
+          "runtimes/win7-x86/native/API-MS-Win-Security-LsaPolicy-L1-1-0.dll": {},
           "runtimes/win7-x86/native/api-ms-win-core-com-l1-1-0.dll": {},
-          "runtimes/win7-x86/native/api-ms-win-core-com-private-l1-1-0.dll": {},
           "runtimes/win7-x86/native/api-ms-win-core-comm-l1-1-0.dll": {},
+          "runtimes/win7-x86/native/api-ms-win-core-com-private-l1-1-0.dll": {},
           "runtimes/win7-x86/native/api-ms-win-core-console-l1-1-0.dll": {},
           "runtimes/win7-x86/native/api-ms-win-core-console-l2-1-0.dll": {},
           "runtimes/win7-x86/native/api-ms-win-core-datetime-l1-1-0.dll": {},
@@ -1685,9 +1701,6 @@
           "runtimes/win7-x86/native/api-ms-win-core-kernel32-legacy-l1-1-0.dll": {},
           "runtimes/win7-x86/native/api-ms-win-core-kernel32-legacy-l1-1-1.dll": {},
           "runtimes/win7-x86/native/api-ms-win-core-kernel32-legacy-l1-1-2.dll": {},
-          "runtimes/win7-x86/native/API-MS-Win-Core-Kernel32-Private-L1-1-0.dll": {},
-          "runtimes/win7-x86/native/API-MS-Win-Core-Kernel32-Private-L1-1-1.dll": {},
-          "runtimes/win7-x86/native/API-MS-Win-Core-Kernel32-Private-L1-1-2.dll": {},
           "runtimes/win7-x86/native/api-ms-win-core-libraryloader-l1-1-0.dll": {},
           "runtimes/win7-x86/native/api-ms-win-core-libraryloader-l1-1-1.dll": {},
           "runtimes/win7-x86/native/api-ms-win-core-localization-l1-2-0.dll": {},
@@ -1701,7 +1714,6 @@
           "runtimes/win7-x86/native/api-ms-win-core-namedpipe-l1-1-0.dll": {},
           "runtimes/win7-x86/native/api-ms-win-core-namedpipe-l1-2-1.dll": {},
           "runtimes/win7-x86/native/api-ms-win-core-normalization-l1-1-0.dll": {},
-          "runtimes/win7-x86/native/API-MS-Win-Core-PrivateProfile-L1-1-0.dll": {},
           "runtimes/win7-x86/native/api-ms-win-core-privateprofile-l1-1-1.dll": {},
           "runtimes/win7-x86/native/api-ms-win-core-processenvironment-l1-1-0.dll": {},
           "runtimes/win7-x86/native/api-ms-win-core-processenvironment-l1-2-0.dll": {},
@@ -1709,7 +1721,6 @@
           "runtimes/win7-x86/native/api-ms-win-core-processthreads-l1-1-0.dll": {},
           "runtimes/win7-x86/native/api-ms-win-core-processthreads-l1-1-1.dll": {},
           "runtimes/win7-x86/native/api-ms-win-core-processthreads-l1-1-2.dll": {},
-          "runtimes/win7-x86/native/API-MS-Win-Core-ProcessTopology-Obsolete-L1-1-0.dll": {},
           "runtimes/win7-x86/native/api-ms-win-core-profile-l1-1-0.dll": {},
           "runtimes/win7-x86/native/api-ms-win-core-psapi-ansi-l1-1-0.dll": {},
           "runtimes/win7-x86/native/api-ms-win-core-psapi-l1-1-0.dll": {},
@@ -1723,12 +1734,10 @@
           "runtimes/win7-x86/native/api-ms-win-core-shutdown-l1-1-0.dll": {},
           "runtimes/win7-x86/native/api-ms-win-core-shutdown-l1-1-1.dll": {},
           "runtimes/win7-x86/native/api-ms-win-core-string-l1-1-0.dll": {},
-          "runtimes/win7-x86/native/API-MS-Win-Core-String-L2-1-0.dll": {},
-          "runtimes/win7-x86/native/api-ms-win-core-string-obsolete-l1-1-0.dll": {},
-          "runtimes/win7-x86/native/api-ms-win-core-string-obsolete-l1-1-1.dll": {},
-          "runtimes/win7-x86/native/API-MS-Win-Core-StringAnsi-L1-1-0.dll": {},
           "runtimes/win7-x86/native/api-ms-win-core-stringloader-l1-1-0.dll": {},
           "runtimes/win7-x86/native/api-ms-win-core-stringloader-l1-1-1.dll": {},
+          "runtimes/win7-x86/native/api-ms-win-core-string-obsolete-l1-1-0.dll": {},
+          "runtimes/win7-x86/native/api-ms-win-core-string-obsolete-l1-1-1.dll": {},
           "runtimes/win7-x86/native/api-ms-win-core-synch-l1-1-0.dll": {},
           "runtimes/win7-x86/native/api-ms-win-core-synch-l1-2-0.dll": {},
           "runtimes/win7-x86/native/api-ms-win-core-sysinfo-l1-1-0.dll": {},
@@ -1753,21 +1762,12 @@
           "runtimes/win7-x86/native/api-ms-win-core-wow64-l1-1-0.dll": {},
           "runtimes/win7-x86/native/api-ms-win-core-xstate-l1-1-0.dll": {},
           "runtimes/win7-x86/native/api-ms-win-core-xstate-l2-1-0.dll": {},
-          "runtimes/win7-x86/native/API-MS-Win-devices-config-L1-1-0.dll": {},
-          "runtimes/win7-x86/native/API-MS-Win-devices-config-L1-1-1.dll": {},
-          "runtimes/win7-x86/native/API-MS-Win-Eventing-ClassicProvider-L1-1-0.dll": {},
-          "runtimes/win7-x86/native/API-MS-Win-Eventing-Consumer-L1-1-0.dll": {},
-          "runtimes/win7-x86/native/API-MS-Win-Eventing-Controller-L1-1-0.dll": {},
-          "runtimes/win7-x86/native/API-MS-Win-Eventing-Legacy-L1-1-0.dll": {},
-          "runtimes/win7-x86/native/API-MS-Win-Eventing-Provider-L1-1-0.dll": {},
-          "runtimes/win7-x86/native/API-MS-Win-EventLog-Legacy-L1-1-0.dll": {},
           "runtimes/win7-x86/native/api-ms-win-ro-typeresolution-l1-1-0.dll": {},
           "runtimes/win7-x86/native/api-ms-win-security-base-l1-1-0.dll": {},
           "runtimes/win7-x86/native/api-ms-win-security-cpwl-l1-1-0.dll": {},
           "runtimes/win7-x86/native/api-ms-win-security-cryptoapi-l1-1-0.dll": {},
           "runtimes/win7-x86/native/api-ms-win-security-lsalookup-l2-1-0.dll": {},
           "runtimes/win7-x86/native/api-ms-win-security-lsalookup-l2-1-1.dll": {},
-          "runtimes/win7-x86/native/API-MS-Win-Security-LsaPolicy-L1-1-0.dll": {},
           "runtimes/win7-x86/native/api-ms-win-security-provider-l1-1-0.dll": {},
           "runtimes/win7-x86/native/api-ms-win-security-sddl-l1-1-0.dll": {},
           "runtimes/win7-x86/native/api-ms-win-service-core-l1-1-0.dll": {},
@@ -2561,11 +2561,11 @@
           "lib/netstandard1.3/System.Xml.XDocument.dll": {}
         }
       },
-      "WebHdfs.Core/0.9.1-rc": {
+      "WebHdfs.Core/0.9.4-rc": {
         "type": "project",
         "framework": "DNXCore,Version=v5.0",
         "dependencies": {
-          "Flurl": "1.1.1",
+          "Flurl": "2.0.0",
           "NETStandard.Library": "1.0.0-rc2-23910",
           "Newtonsoft.Json": "8.0.3",
           "System.Dynamic.Runtime": "4.0.11-rc2-23910"
@@ -2573,17 +2573,17 @@
       }
     },
     "DNXCore,Version=v5.0/win7-x64": {
-      "Flurl/1.1.1": {
+      "Flurl/2.0.0": {
         "type": "package",
         "dependencies": {
           "System.Linq": "4.0.0",
           "System.Reflection.TypeExtensions": "4.0.0"
         },
         "compile": {
-          "lib/dotnet5.4/Flurl.NETCore.dll": {}
+          "lib/dotnet5.4/Flurl.dll": {}
         },
         "runtime": {
-          "lib/dotnet5.4/Flurl.NETCore.dll": {}
+          "lib/dotnet5.4/Flurl.dll": {}
         }
       },
       "Microsoft.DotNet.CoreHost/0.0.1-beta-00001": {
@@ -3258,9 +3258,25 @@
         "type": "package",
         "native": {
           "runtimes/win7-x64/native/API-MS-Win-Base-Util-L1-1-0.dll": {},
+          "runtimes/win7-x64/native/API-MS-Win-Core-Kernel32-Private-L1-1-0.dll": {},
+          "runtimes/win7-x64/native/API-MS-Win-Core-Kernel32-Private-L1-1-1.dll": {},
+          "runtimes/win7-x64/native/API-MS-Win-Core-Kernel32-Private-L1-1-2.dll": {},
+          "runtimes/win7-x64/native/API-MS-Win-Core-PrivateProfile-L1-1-0.dll": {},
+          "runtimes/win7-x64/native/API-MS-Win-Core-ProcessTopology-Obsolete-L1-1-0.dll": {},
+          "runtimes/win7-x64/native/API-MS-Win-Core-StringAnsi-L1-1-0.dll": {},
+          "runtimes/win7-x64/native/API-MS-Win-Core-String-L2-1-0.dll": {},
+          "runtimes/win7-x64/native/API-MS-Win-devices-config-L1-1-0.dll": {},
+          "runtimes/win7-x64/native/API-MS-Win-devices-config-L1-1-1.dll": {},
+          "runtimes/win7-x64/native/API-MS-Win-Eventing-ClassicProvider-L1-1-0.dll": {},
+          "runtimes/win7-x64/native/API-MS-Win-Eventing-Consumer-L1-1-0.dll": {},
+          "runtimes/win7-x64/native/API-MS-Win-Eventing-Controller-L1-1-0.dll": {},
+          "runtimes/win7-x64/native/API-MS-Win-Eventing-Legacy-L1-1-0.dll": {},
+          "runtimes/win7-x64/native/API-MS-Win-Eventing-Provider-L1-1-0.dll": {},
+          "runtimes/win7-x64/native/API-MS-Win-EventLog-Legacy-L1-1-0.dll": {},
+          "runtimes/win7-x64/native/API-MS-Win-Security-LsaPolicy-L1-1-0.dll": {},
           "runtimes/win7-x64/native/api-ms-win-core-com-l1-1-0.dll": {},
-          "runtimes/win7-x64/native/api-ms-win-core-com-private-l1-1-0.dll": {},
           "runtimes/win7-x64/native/api-ms-win-core-comm-l1-1-0.dll": {},
+          "runtimes/win7-x64/native/api-ms-win-core-com-private-l1-1-0.dll": {},
           "runtimes/win7-x64/native/api-ms-win-core-console-l1-1-0.dll": {},
           "runtimes/win7-x64/native/api-ms-win-core-console-l2-1-0.dll": {},
           "runtimes/win7-x64/native/api-ms-win-core-datetime-l1-1-0.dll": {},
@@ -3286,9 +3302,6 @@
           "runtimes/win7-x64/native/api-ms-win-core-kernel32-legacy-l1-1-0.dll": {},
           "runtimes/win7-x64/native/api-ms-win-core-kernel32-legacy-l1-1-1.dll": {},
           "runtimes/win7-x64/native/api-ms-win-core-kernel32-legacy-l1-1-2.dll": {},
-          "runtimes/win7-x64/native/API-MS-Win-Core-Kernel32-Private-L1-1-0.dll": {},
-          "runtimes/win7-x64/native/API-MS-Win-Core-Kernel32-Private-L1-1-1.dll": {},
-          "runtimes/win7-x64/native/API-MS-Win-Core-Kernel32-Private-L1-1-2.dll": {},
           "runtimes/win7-x64/native/api-ms-win-core-libraryloader-l1-1-0.dll": {},
           "runtimes/win7-x64/native/api-ms-win-core-libraryloader-l1-1-1.dll": {},
           "runtimes/win7-x64/native/api-ms-win-core-localization-l1-2-0.dll": {},
@@ -3302,7 +3315,6 @@
           "runtimes/win7-x64/native/api-ms-win-core-namedpipe-l1-1-0.dll": {},
           "runtimes/win7-x64/native/api-ms-win-core-namedpipe-l1-2-1.dll": {},
           "runtimes/win7-x64/native/api-ms-win-core-normalization-l1-1-0.dll": {},
-          "runtimes/win7-x64/native/API-MS-Win-Core-PrivateProfile-L1-1-0.dll": {},
           "runtimes/win7-x64/native/api-ms-win-core-privateprofile-l1-1-1.dll": {},
           "runtimes/win7-x64/native/api-ms-win-core-processenvironment-l1-1-0.dll": {},
           "runtimes/win7-x64/native/api-ms-win-core-processenvironment-l1-2-0.dll": {},
@@ -3310,7 +3322,6 @@
           "runtimes/win7-x64/native/api-ms-win-core-processthreads-l1-1-0.dll": {},
           "runtimes/win7-x64/native/api-ms-win-core-processthreads-l1-1-1.dll": {},
           "runtimes/win7-x64/native/api-ms-win-core-processthreads-l1-1-2.dll": {},
-          "runtimes/win7-x64/native/API-MS-Win-Core-ProcessTopology-Obsolete-L1-1-0.dll": {},
           "runtimes/win7-x64/native/api-ms-win-core-profile-l1-1-0.dll": {},
           "runtimes/win7-x64/native/api-ms-win-core-psapi-ansi-l1-1-0.dll": {},
           "runtimes/win7-x64/native/api-ms-win-core-psapi-l1-1-0.dll": {},
@@ -3324,12 +3335,10 @@
           "runtimes/win7-x64/native/api-ms-win-core-shutdown-l1-1-0.dll": {},
           "runtimes/win7-x64/native/api-ms-win-core-shutdown-l1-1-1.dll": {},
           "runtimes/win7-x64/native/api-ms-win-core-string-l1-1-0.dll": {},
-          "runtimes/win7-x64/native/API-MS-Win-Core-String-L2-1-0.dll": {},
-          "runtimes/win7-x64/native/api-ms-win-core-string-obsolete-l1-1-0.dll": {},
-          "runtimes/win7-x64/native/api-ms-win-core-string-obsolete-l1-1-1.dll": {},
-          "runtimes/win7-x64/native/API-MS-Win-Core-StringAnsi-L1-1-0.dll": {},
           "runtimes/win7-x64/native/api-ms-win-core-stringloader-l1-1-0.dll": {},
           "runtimes/win7-x64/native/api-ms-win-core-stringloader-l1-1-1.dll": {},
+          "runtimes/win7-x64/native/api-ms-win-core-string-obsolete-l1-1-0.dll": {},
+          "runtimes/win7-x64/native/api-ms-win-core-string-obsolete-l1-1-1.dll": {},
           "runtimes/win7-x64/native/api-ms-win-core-synch-l1-1-0.dll": {},
           "runtimes/win7-x64/native/api-ms-win-core-synch-l1-2-0.dll": {},
           "runtimes/win7-x64/native/api-ms-win-core-sysinfo-l1-1-0.dll": {},
@@ -3354,21 +3363,12 @@
           "runtimes/win7-x64/native/api-ms-win-core-wow64-l1-1-0.dll": {},
           "runtimes/win7-x64/native/api-ms-win-core-xstate-l1-1-0.dll": {},
           "runtimes/win7-x64/native/api-ms-win-core-xstate-l2-1-0.dll": {},
-          "runtimes/win7-x64/native/API-MS-Win-devices-config-L1-1-0.dll": {},
-          "runtimes/win7-x64/native/API-MS-Win-devices-config-L1-1-1.dll": {},
-          "runtimes/win7-x64/native/API-MS-Win-Eventing-ClassicProvider-L1-1-0.dll": {},
-          "runtimes/win7-x64/native/API-MS-Win-Eventing-Consumer-L1-1-0.dll": {},
-          "runtimes/win7-x64/native/API-MS-Win-Eventing-Controller-L1-1-0.dll": {},
-          "runtimes/win7-x64/native/API-MS-Win-Eventing-Legacy-L1-1-0.dll": {},
-          "runtimes/win7-x64/native/API-MS-Win-Eventing-Provider-L1-1-0.dll": {},
-          "runtimes/win7-x64/native/API-MS-Win-EventLog-Legacy-L1-1-0.dll": {},
           "runtimes/win7-x64/native/api-ms-win-ro-typeresolution-l1-1-0.dll": {},
           "runtimes/win7-x64/native/api-ms-win-security-base-l1-1-0.dll": {},
           "runtimes/win7-x64/native/api-ms-win-security-cpwl-l1-1-0.dll": {},
           "runtimes/win7-x64/native/api-ms-win-security-cryptoapi-l1-1-0.dll": {},
           "runtimes/win7-x64/native/api-ms-win-security-lsalookup-l2-1-0.dll": {},
           "runtimes/win7-x64/native/api-ms-win-security-lsalookup-l2-1-1.dll": {},
-          "runtimes/win7-x64/native/API-MS-Win-Security-LsaPolicy-L1-1-0.dll": {},
           "runtimes/win7-x64/native/api-ms-win-security-provider-l1-1-0.dll": {},
           "runtimes/win7-x64/native/api-ms-win-security-sddl-l1-1-0.dll": {},
           "runtimes/win7-x64/native/api-ms-win-service-core-l1-1-0.dll": {},
@@ -4162,11 +4162,11 @@
           "lib/netstandard1.3/System.Xml.XDocument.dll": {}
         }
       },
-      "WebHdfs.Core/0.9.1-rc": {
+      "WebHdfs.Core/0.9.4-rc": {
         "type": "project",
         "framework": "DNXCore,Version=v5.0",
         "dependencies": {
-          "Flurl": "1.1.1",
+          "Flurl": "2.0.0",
           "NETStandard.Library": "1.0.0-rc2-23910",
           "Newtonsoft.Json": "8.0.3",
           "System.Dynamic.Runtime": "4.0.11-rc2-23910"
@@ -4175,23 +4175,23 @@
     }
   },
   "libraries": {
-    "WebHdfs.Core/0.9.1-rc": {
+    "WebHdfs.Core/0.9.4-rc": {
       "type": "project",
       "path": "../WebHdfs.Core/project.json"
     },
-    "Flurl/1.1.1": {
+    "Flurl/2.0.0": {
       "type": "package",
-      "sha512": "cAoZhLOwnc0/u+MfVz+/zi8m9ytHP8c3afB1Zt7nyMW4F6CJADLh2IS0HDihfWakg+vubTE5QjkJlBibjG6Oig==",
+      "sha512": "7yvoh2arCioXljalQR87DccyFMFRGOfKOv0TI8jKNHUJ6K/fkfFPKH0k5AvFqtT3wgorV3Ks8mF/3pj0KwSttg==",
       "files": [
-        "Flurl.1.1.1.nupkg",
-        "Flurl.1.1.1.nupkg.sha512",
+        "Flurl.2.0.0.nupkg",
+        "Flurl.2.0.0.nupkg.sha512",
         "Flurl.nuspec",
-        "lib/dotnet5.4/Flurl.NETCore.dll",
-        "lib/dotnet5.4/Flurl.NETCore.pdb",
-        "lib/dotnet5.4/Flurl.NETCore.xml",
-        "lib/portable-net40+sl50+win+wpa81+wp80+MonoAndroid10+MonoTouch10/Flurl.dll",
-        "lib/portable-net40+sl50+win+wpa81+wp80+MonoAndroid10+MonoTouch10/Flurl.pdb",
-        "lib/portable-net40+sl50+win+wpa81+wp80+MonoAndroid10+MonoTouch10/Flurl.XML"
+        "lib/dotnet5.4/Flurl.dll",
+        "lib/dotnet5.4/Flurl.pdb",
+        "lib/dotnet5.4/Flurl.xml",
+        "lib/portable-net40+win+wpa81+wp80+MonoAndroid10+MonoTouch10/Flurl.dll",
+        "lib/portable-net40+win+wpa81+wp80+MonoAndroid10+MonoTouch10/Flurl.pdb",
+        "lib/portable-net40+win+wpa81+wp80+MonoAndroid10+MonoTouch10/Flurl.XML"
       ]
     },
     "Microsoft.Bcl/1.1.9": {
@@ -8646,7 +8646,7 @@
     "": [
       "Newtonsoft.Json >= 8.0.3",
       "Microsoft.NETCore.Portable.Compatibility >= 1.0.1-rc2-23910",
-      "WebHdfs.Core >= 0.9.1-rc"
+      "WebHdfs.Core >= 0.9.4-rc"
     ],
     ".NETFramework,Version=v4.5.1": [],
     "DNXCore,Version=v5.0": [

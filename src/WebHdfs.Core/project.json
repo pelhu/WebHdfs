@@ -1,17 +1,22 @@
 ﻿{
-    "version": "0.9.1-rc",
+    "version": "0.9.4-rc",
     "title": "WebHdfs.Core",
     "description": "WebHdfs client for .Net Core. Forked from https://github.com/justmara/WebHdfs",
     "authors": [ "Khamzat Salikhov" ],
     "tags": [ "Hadoop", "Hdfs", "WebHdfs", ".Net", "Core" ],
-    "projectUrl": "https://github.com/pelhu/WebHdfs.Core",
+    "packOptions": {
+        "repository": {
+            "type": "git",
+            "url": "https://github.com/pelhu/WebHdfs.Core"
+        }
+    },
     "licenseUrl": "",
-    "releaseNotes": "",
+    "releaseNotes": "Upgrade Flurl to v2",
     "copyright": "Crypttech 2016",
     "dependencies": {
         "Newtonsoft.Json": "8.0.3",
         "System.Dynamic.Runtime": "4.0.11-rc2-23910",
-        "Flurl": "1.1.1"
+        "Flurl": "2.0.0"
     },
 
     "frameworks": {

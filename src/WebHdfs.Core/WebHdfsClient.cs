@@ -44,8 +44,10 @@ namespace WebHdfs.Core
 
         public string Prefix { get; private set; }
 
-        const string _defaultPrefix = "/webhdfs/v1/";
+        public const string DefaultPrefix = "/webhdfs/v1/";
+
         const string _defaultPermissions = "755";
+        private const int _defaultTimeoutSeconds = 300;
 
         /// <summary>
         /// Underlying <see cref="HttpMessageHandler"/> that will process web requests (for testing purpose mostly).
@@ -90,8 +92,8 @@ namespace WebHdfs.Core
         /// </summary>
         /// <param name="baseUrl">Base url of WebHdfs service.</param>
         /// <param name="user">Username to be used on each call.</param>
-        public WebHdfsClient(string baseUrl, string user = null, string prefix = _defaultPrefix)
-            : this(new HttpClientHandler(), baseUrl, user, prefix)
+        public WebHdfsClient(string baseUrl, string user = null, string prefix = DefaultPrefix, int timeoutSeconds = _defaultTimeoutSeconds)
+            : this(new HttpClientHandler(), baseUrl, user, prefix, timeoutSeconds)
         {
         }
 
@@ -101,10 +103,10 @@ namespace WebHdfs.Core
         /// <param name="handler">Underlying <see cref="HttpMessageHandler"/> to be used (for testing mostly).</param>
         /// <param name="baseUrl">Base url of WebHdfs service.</param>
         /// <param name="user">Username to be used on each call.</param>
-        public WebHdfsClient(HttpMessageHandler handler, string baseUrl, string user = null, string prefix = _defaultPrefix)
+        public WebHdfsClient(HttpMessageHandler handler, string baseUrl, string user = null, string prefix = DefaultPrefix, int timeoutSeconds = _defaultTimeoutSeconds)
         {
             InnerHandler = handler;
-            httpClient = new HttpClient(handler) { BaseAddress = new Uri(baseUrl.AppendPathSegment(prefix)) };
+            httpClient = new HttpClient(handler) { BaseAddress = new Uri(baseUrl.AppendPathSegment(prefix)), Timeout = TimeSpan.FromSeconds(timeoutSeconds) };
             User = user;
             Prefix = prefix;
             //GetHomeDirectory().Wait();
@@ -721,6 +723,7 @@ namespace WebHdfs.Core
             {
                 request.Content = data;
             }
+
             var response = await httpClient.SendAsync(request, options.Completion, options.Token).ConfigureAwait(false);
 
             if (!response.IsSuccessStatusCode)

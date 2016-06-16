@@ -13,16 +13,16 @@ namespace test
     {
         public static void Main(string[] args)
         {
+            var w = GetW();
+            var result = w.GetContentSummary("khamzat_test2").Result;
+            Console.WriteLine(JsonConvert.SerializeObject(result));
+
+            Console.ReadKey();
+            return;
+
+
             //var w = GetW();
-            //var result = w.GetContentSummary("khamzat_test2").Result;
-            //Console.WriteLine(JsonConvert.SerializeObject(result));
-
-            //Console.ReadKey();
-            //return;
-
-
-            //var w = GetW();
-            //var result = w.DeleteDirectory("khamzat_test").Result;
+            //var result = w.Delete("khamzat_test", true).Result;
             //Console.WriteLine(JsonConvert.SerializeObject(result));
 
             //Console.ReadKey();
@@ -83,7 +83,7 @@ namespace test
 
         private static WebHdfsClient GetW()
         {
-            return new WebHdfsClient("http://172.17.7.191:50070", "clog");
+            return new WebHdfsClient("http://172.17.7.191:50070", "root");
         }
 
         private async static Task testAppend()
@@ -147,7 +147,7 @@ namespace test
                 foreach (var item in ds.Files.Where(f => f.PathSuffix.StartsWith(fileInfo.Name)))
                 {
                     await w.Delete("khamzat_test2/" + item.PathSuffix);
-                } 
+                }
             }
 
             var count = 3;
