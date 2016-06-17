@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using WebHdfs.Core;
 
@@ -13,13 +14,19 @@ namespace test
     {
         public static void Main(string[] args)
         {
+            //var w = GetW();
+            //var result = w.GetContentSummary("khamzat_test2").Result;
+            //Console.WriteLine(JsonConvert.SerializeObject(result));
+
+            //Console.ReadKey();
+            //return;
+
             var w = GetW();
-            var result = w.GetContentSummary("khamzat_test2").Result;
-            Console.WriteLine(JsonConvert.SerializeObject(result));
+
+            w.AppendFile("sdf sdfsd fsdfsdfsdfsd", Encoding.UTF8, "parsedLogs/aaa.txt", true).Wait();
 
             Console.ReadKey();
             return;
-
 
             //var w = GetW();
             //var result = w.Delete("khamzat_test", true).Result;
@@ -83,7 +90,7 @@ namespace test
 
         private static WebHdfsClient GetW()
         {
-            return new WebHdfsClient("http://172.17.7.191:50070", "root");
+            return new WebHdfsClient("http://172.17.7.191:50070", "clog");
         }
 
         private async static Task testAppend()

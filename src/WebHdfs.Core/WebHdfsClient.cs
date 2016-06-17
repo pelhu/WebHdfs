@@ -252,9 +252,8 @@ namespace WebHdfs.Core
                 uri += uri.SetQueryParam("offset", offset.ToString());
             if (length > 0)
                 uri += uri.SetQueryParam("length", length.ToString());
-            var client = new HttpClient(InnerHandler ?? new HttpClientHandler(), InnerHandler == null);
             var request = new HttpRequestMessage(HttpMethod.Get, uri);
-            var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, token);
+            var response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, token);
             return await response.Content.ReadAsStreamAsync();
         }
 
@@ -594,7 +593,7 @@ namespace WebHdfs.Core
         public async Task<bool> AppendFile(string localFile, string remotePath, CancellationToken token = default(CancellationToken))
         {
             var sc = new StreamContent(File.OpenRead(localFile));
-            return await appendFile(sc, remotePath, token);
+            return await appendFile(sc, remotePath, token: token);
         }
 
         /// <summary>
@@ -607,7 +606,7 @@ namespace WebHdfs.Core
         public async Task<bool> AppendFile(Stream content, string remotePath, CancellationToken token = default(CancellationToken))
         {
             var sc = new StreamContent(content);
-            return await appendFile(sc, remotePath, token);
+            return await appendFile(sc, remotePath, token: token);
         }
 
         /// <summary>
@@ -620,7 +619,7 @@ namespace WebHdfs.Core
         public async Task<bool> AppendFile(byte[] byteArray, string remotePath, CancellationToken token = default(CancellationToken))
         {
             var content = new ByteArrayContent(byteArray);
-            return await appendFile(content, remotePath, token);
+            return await appendFile(content, remotePath,  token: token);
         }
 
         /// <summary>
@@ -634,10 +633,10 @@ namespace WebHdfs.Core
         public async Task<bool> AppendFile(string text, Encoding encoding, string remotePath, CancellationToken token = default(CancellationToken))
         {
             var content = new ByteArrayContent((encoding ?? Encoding.UTF8).GetBytes(text));
-            return await appendFile(content, remotePath, token);
+            return await appendFile(content, remotePath, token: token);
         }
 
-        private async Task<bool> appendFile(HttpContent content, string remotePath, CancellationToken token)
+        private async Task<bool> appendFile(HttpContent content, string remotePath,CancellationToken token = default(CancellationToken))
         {
             var addingUrl = prepareUrl(remotePath, "APPEND");
             var location = await getRedirectLocation(addingUrl, HttpMethod.Post, token);
@@ -738,7 +737,8 @@ namespace WebHdfs.Core
         {
             using (var client = new HttpClient(new HttpClientHandler() { AllowAutoRedirect = false }, true))
             {
-                client.BaseAddress = new Uri(BaseUrl);
+                client.Timeout = httpClient.Timeout;
+                client.BaseAddress = httpClient.BaseAddress;
 
                 //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/octet-stream"));
