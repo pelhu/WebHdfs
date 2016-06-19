@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace WebHdfs.Core
@@ -25,7 +26,7 @@ namespace WebHdfs.Core
                 var t = response.Content.ReadAsStringAsync();
                 if (t.Wait(3000))
                 {
-                    _content = t.Result;
+                    _content = Regex.Unescape(t.Result);
                 }
             }
             catch { }
