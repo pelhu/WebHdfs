@@ -691,6 +691,8 @@ namespace WebHdfs.Core
         {
             if (string.IsNullOrWhiteSpace(remotePath)) remotePath = "";
 
+            remotePath = remotePath.TrimStart('/');
+
             remotePath = remotePath.SetQueryParam("op", operation);
 
             if (!string.IsNullOrEmpty(User))

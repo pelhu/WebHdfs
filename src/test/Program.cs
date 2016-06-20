@@ -23,7 +23,7 @@ namespace test
 
             var w = GetW();
 
-            w.AppendFile("sdf sdfsd fsdfsdfsdfsd", Encoding.UTF8, "parsedLogs/aaa.txt", true).Wait();
+            w.Rename("/parsedLogs/---1abb0282-ab80-4dd0-b14a-2b280c5d689c", "/parsedLogs/2.txt").Wait();
 
             Console.ReadKey();
             return;
