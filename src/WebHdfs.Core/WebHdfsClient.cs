@@ -119,7 +119,7 @@ namespace WebHdfs.Core
         /// </summary>
         /// <param name="remotePath">The string representation a Path.</param>
         /// <returns></returns>
-        public async Task<DirectoryItems> GetDirectoryItems(string remotePath)
+        public async Task<DirectoryItems> GetDirectoryItemsAsync(string remotePath)
         {
             try
             {
@@ -136,7 +136,7 @@ namespace WebHdfs.Core
         /// </summary>
         /// <param name="remotePath">The string representation a Path.</param>
         /// <returns></returns>
-        public async Task<FileStatus> GetStatus(string remotePath)
+        public async Task<FileStatus> GetStatusAsync(string remotePath)
         {
             try
             {
@@ -148,7 +148,7 @@ namespace WebHdfs.Core
             }
         }
 
-        public async Task<bool> Exists(string remotePath)
+        public async Task<bool> ExistsAsync(string remotePath)
         {
             try
             {
@@ -166,7 +166,7 @@ namespace WebHdfs.Core
         /// The default implementation returns "/user/$USER/". 
         /// </summary>
         /// <returns></returns>
-        public async Task GetHomeDirectory()
+        public async Task GetHomeDirectoryAsync()
         {
             if (string.IsNullOrEmpty(homeDirectory))
             {
@@ -185,7 +185,7 @@ namespace WebHdfs.Core
         /// </summary>
         /// <param name="remotePath">The string representation a Path.</param>
         /// <returns></returns>
-        public async Task<ContentSummary> GetContentSummary(string remotePath)
+        public async Task<ContentSummary> GetContentSummaryAsync(string remotePath)
         {
             try
             {
@@ -203,7 +203,7 @@ namespace WebHdfs.Core
         /// <param name="remotePath">The file checksum. The default return value is null, which 
         /// indicates that no checksum algorithm is implemented in the corresponding FileSystem. </param>
         /// <returns></returns>
-        public async Task<FileChecksum> GetFileChecksum(string remotePath)
+        public async Task<FileChecksum> GetFileChecksumAsync(string remotePath)
         {
             try
             {
@@ -220,9 +220,9 @@ namespace WebHdfs.Core
         /// </summary>
         /// <param name="remotePath">The string representation a Path.</param>
         /// <returns>Async <see cref="Task{Stream}"/> with file content.</returns>
-        public async Task<Stream> OpenFile(string remotePath)
+        public async Task<Stream> OpenFileAsync(string remotePath)
         {
-            return await OpenFile(remotePath, -1, -1, CancellationToken.None);
+            return await OpenFileAsync(remotePath, -1, -1, CancellationToken.None);
         }
 
         /// <summary>
@@ -231,9 +231,9 @@ namespace WebHdfs.Core
         /// <param name="remotePath">The string representation a Path.</param>
         /// <param name="token"><see cref="CancellationToken"/> to cancel call if needed.</param>
         /// <returns>Async <see cref="Task{Stream}"/> with file content.</returns>
-        public async Task<Stream> OpenFile(string remotePath, CancellationToken token)
+        public async Task<Stream> OpenFileAsync(string remotePath, CancellationToken token)
         {
-            return await OpenFile(remotePath, -1, -1, token);
+            return await OpenFileAsync(remotePath, -1, -1, token);
         }
 
         /// <summary>
@@ -245,7 +245,7 @@ namespace WebHdfs.Core
         /// <param name="length">The number of bytes to be processed.</param>
         /// <param name="token"><see cref="CancellationToken"/> to cancel call if needed.</param>
         /// <returns>Async <see cref="Task{Stream}"/> with file content.</returns>
-        public async Task<Stream> OpenFile(string remotePath, int offset = 0, int length = -1, CancellationToken token = default(CancellationToken))
+        public async Task<Stream> OpenFileAsync(string remotePath, int offset = 0, int length = -1, CancellationToken token = default(CancellationToken))
         {
             string uri = prepareUrl(remotePath, "OPEN");
             if (offset > 0)
@@ -265,7 +265,7 @@ namespace WebHdfs.Core
         /// <param name="overwrite"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public async Task<bool> DownloadFile(string remotePath, string destinationPath, bool overwrite = false, CancellationToken token = default(CancellationToken))
+        public async Task<bool> DownloadFileAsync(string remotePath, string destinationPath, bool overwrite = false, CancellationToken token = default(CancellationToken))
         {
             if (string.IsNullOrWhiteSpace(remotePath))
             {
@@ -282,7 +282,7 @@ namespace WebHdfs.Core
                 throw new IOException("Destination file already exists.");
             }
 
-            using (var inputStream = await OpenFile(remotePath))
+            using (var inputStream = await OpenFileAsync(remotePath))
             {
                 using (var outputStream = File.OpenWrite(destinationPath))
                 {
@@ -301,7 +301,7 @@ namespace WebHdfs.Core
         /// <param name="overwrite"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public async Task<bool> DownloadDirectory(string remoteDirectory, string localDirectory, bool overwrite = false, CancellationToken token = default(CancellationToken))
+        public async Task<bool> DownloadDirectoryAsync(string remoteDirectory, string localDirectory, bool overwrite = false, CancellationToken token = default(CancellationToken))
         {
             if (string.IsNullOrWhiteSpace(remoteDirectory))
             {
@@ -315,7 +315,7 @@ namespace WebHdfs.Core
 
             Directory.CreateDirectory(localDirectory);
 
-            var list = await GetDirectoryItems(remoteDirectory);
+            var list = await GetDirectoryItemsAsync(remoteDirectory);
 
             if (list == null)
             {
@@ -324,14 +324,14 @@ namespace WebHdfs.Core
 
             foreach (var file in list.Files)
             {
-                await DownloadFile(remoteDirectory.AppendPathSegment(file.PathSuffix), Path.Combine(localDirectory, file.PathSuffix), overwrite);
+                await DownloadFileAsync(remoteDirectory.AppendPathSegment(file.PathSuffix), Path.Combine(localDirectory, file.PathSuffix), overwrite);
             }
 
             foreach (var childDir in list.Directories)
             {
                 var childDestDir = Path.Combine(localDirectory, childDir.PathSuffix);
 
-                await DownloadDirectory(remoteDirectory.AppendPathSegment(childDir.PathSuffix), childDestDir, overwrite);
+                await DownloadDirectoryAsync(remoteDirectory.AppendPathSegment(childDir.PathSuffix), childDestDir, overwrite);
             }
 
             return true;
@@ -346,7 +346,7 @@ namespace WebHdfs.Core
         /// </summary>
         /// <param name="remotePath">The string representation a Path.</param>
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
-        public async Task<bool> CreateDirectory(string remotePath, string permissions = _defaultPermissions)
+        public async Task<bool> CreateDirectoryAsync(string remotePath, string permissions = _defaultPermissions)
         {
             object additionalQueryParameters = null;
             throwIfPermissionsNotValide(permissions);
@@ -362,7 +362,7 @@ namespace WebHdfs.Core
         /// <param name="remotePath">The string representation a Path.</param>
         /// <param name="newRemotePath"></param>
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
-        public async Task<bool> Rename(string remotePath, string newRemotePath)
+        public async Task<bool> RenameAsync(string remotePath, string newRemotePath)
         {
             var result = await callWebHDFS<BooleanResult>(remotePath, "RENAME", HttpMethod.Put, additionalQueryParameters: new { destination = newRemotePath });
             return result.Value;
@@ -374,9 +374,9 @@ namespace WebHdfs.Core
         /// </summary>
         /// <param name="remotePath">the path to delete</param>
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
-        public async Task<bool> Delete(string remotePath)
+        public async Task<bool> DeleteAsync(string remotePath)
         {
-            return await Delete(remotePath, false);
+            return await DeleteAsync(remotePath, false);
         }
 
 
@@ -387,7 +387,7 @@ namespace WebHdfs.Core
         /// <param name="recursive">if path is a directory and set to true, the directory is deleted else throws an exception.
         /// In case of a file the recursive can be set to either true or false. </param>
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
-        public async Task<bool> Delete(string remotePath, bool recursive)
+        public async Task<bool> DeleteAsync(string remotePath, bool recursive)
         {
             var result = await callWebHDFS<BooleanResult>(remotePath, "DELETE", HttpMethod.Delete, additionalQueryParameters: new { recursive = recursive.ToString().ToLower() });
             return result.Value;
@@ -402,7 +402,7 @@ namespace WebHdfs.Core
         /// <param name="remotePath">The string representation a Path.</param>
         /// <param name="permissions"></param>
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
-        public async Task<bool> SetPermissions(string remotePath, string permissions)
+        public async Task<bool> SetPermissionsAsync(string remotePath, string permissions)
         {
             throwIfPermissionsNotValide(permissions);
 
@@ -416,7 +416,7 @@ namespace WebHdfs.Core
         /// <param name="remotePath">The string representation a Path.</param>
         /// <param name="owner">If it is null, the original username remains unchanged</param>
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
-        public async Task<bool> SetOwner(string remotePath, string owner)
+        public async Task<bool> SetOwnerAsync(string remotePath, string owner)
         {
             var result = await callWebHDFS<BooleanResult>(remotePath, "SETOWNER", HttpMethod.Put, additionalQueryParameters: new { owner = owner });
             return result.Value;
@@ -428,7 +428,7 @@ namespace WebHdfs.Core
         /// <param name="remotePath">The string representation a Path.</param>
         /// <param name="group">If it is null, the original groupname remains unchanged</param>
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
-        public async Task<bool> SetGroup(string remotePath, string group)
+        public async Task<bool> SetGroupAsync(string remotePath, string group)
         {
             var result = await callWebHDFS<BooleanResult>(remotePath, "SETOWNER", HttpMethod.Put, additionalQueryParameters: new { group = group });
             return result.Value;
@@ -440,7 +440,7 @@ namespace WebHdfs.Core
         /// <param name="remotePath">The string representation a Path.</param>
         /// <param name="replicationFactor"></param>
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
-        public async Task<bool> SetReplicationFactor(string remotePath, int replicationFactor)
+        public async Task<bool> SetReplicationFactorAsync(string remotePath, int replicationFactor)
         {
             var result = await callWebHDFS<BooleanResult>(remotePath, "SETREPLICATION", HttpMethod.Put, additionalQueryParameters: new { replication = replicationFactor });
             return result.Value;
@@ -453,7 +453,7 @@ namespace WebHdfs.Core
         /// <param name="accessTime">Set the access time of this file. The number of milliseconds since Jan 1, 1970. 
         /// A value of -1 means that this call should not set access time</param>
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
-        public async Task<bool> SetAccessTime(string remotePath, string accessTime)
+        public async Task<bool> SetAccessTimeAsync(string remotePath, string accessTime)
         {
             var result = await callWebHDFS<BooleanResult>(remotePath, "SETTIMES", HttpMethod.Put, additionalQueryParameters: new { accesstime = accessTime });
             return result.Value;
@@ -466,7 +466,7 @@ namespace WebHdfs.Core
         /// <param name="modificationTime">Set the modification time of this file. The number of milliseconds since Jan 1, 1970.
         /// A value of -1 means that this call should not set modification time</param>
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
-        public async Task<bool> SetModificationTime(string remotePath, string modificationTime)
+        public async Task<bool> SetModificationTimeAsync(string remotePath, string modificationTime)
         {
             var result = await callWebHDFS<BooleanResult>(remotePath, "SETTIMES", HttpMethod.Put, additionalQueryParameters: new { modificationtime = modificationTime });
             return result.Value;
@@ -482,13 +482,16 @@ namespace WebHdfs.Core
         /// <param name="overwrite"></param>
         /// <param name="token"></param>
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
-        public async Task<bool> UploadFile(string localFile, string remotePath, bool overwrite = false, string permissions = _defaultPermissions, CancellationToken token = default(CancellationToken))
+        public async Task<bool> UploadFileAsync(string localFile, string remotePath, bool overwrite = false, string permissions = _defaultPermissions, CancellationToken token = default(CancellationToken))
         {
-            var sc = new StreamContent(File.OpenRead(localFile));
-            return await createFile(sc, remotePath, overwrite, permissions, token);
+            using (var stream = File.OpenRead(localFile))
+            {
+                var sc = new StreamContent(stream);
+                return await createFile(sc, remotePath, overwrite, permissions, token); 
+            }
         }
 
-        public async Task<bool> UploadDirectory(string localDirectory, string remoteDirectory, bool overwrite = false, CancellationToken token = default(CancellationToken))
+        public async Task<bool> UploadDirectoryAsync(string localDirectory, string remoteDirectory, bool overwrite = false, CancellationToken token = default(CancellationToken))
         {
             if (string.IsNullOrWhiteSpace(localDirectory))
             {
@@ -507,12 +510,12 @@ namespace WebHdfs.Core
 
             foreach (var file in Directory.GetFiles(localDirectory))
             {
-                await UploadFile(file, remoteDirectory.AppendPathSegment(Path.GetFileName(file)));
+                await UploadFileAsync(file, remoteDirectory.AppendPathSegment(Path.GetFileName(file)));
             }
 
             foreach (var dir in Directory.GetDirectories(localDirectory))
             {
-                await UploadDirectory(dir, remoteDirectory.AppendPathSegment(Path.GetDirectoryName(dir)));
+                await UploadDirectoryAsync(dir, remoteDirectory.AppendPathSegment(Path.GetDirectoryName(dir)));
             }
 
             return true;
@@ -528,7 +531,7 @@ namespace WebHdfs.Core
         /// <param name="permissions"></param>
         /// <param name="token"></param>
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
-        public async Task<bool> CreateFile(Stream content, string remotePath, bool overwrite = false, string permissions = _defaultPermissions, CancellationToken token = default(CancellationToken))
+        public async Task<bool> CreateFileAsync(Stream content, string remotePath, bool overwrite = false, string permissions = _defaultPermissions, CancellationToken token = default(CancellationToken))
         {
             var sc = new StreamContent(content);
             return await createFile(sc, remotePath, overwrite, permissions, token);
@@ -543,7 +546,7 @@ namespace WebHdfs.Core
         /// <param name="permissions"></param>
         /// <param name="token"></param>
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
-        public async Task<bool> CreateFile(byte[] byteArray, string remotePath, bool overwrite = false, string permissions = _defaultPermissions, CancellationToken token = default(CancellationToken))
+        public async Task<bool> CreateFileAsync(byte[] byteArray, string remotePath, bool overwrite = false, string permissions = _defaultPermissions, CancellationToken token = default(CancellationToken))
         {
             var sc = new ByteArrayContent(byteArray);
             return await createFile(sc, remotePath, overwrite, permissions, token);
@@ -559,7 +562,7 @@ namespace WebHdfs.Core
         /// <param name="permissions"></param>
         /// <param name="token"></param>
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
-        public async Task<bool> CreateFile(string text, Encoding encoding, string remotePath, bool overwrite = false, string permissions = _defaultPermissions, CancellationToken token = default(CancellationToken))
+        public async Task<bool> CreateFileAsync(string text, Encoding encoding, string remotePath, bool overwrite = false, string permissions = _defaultPermissions, CancellationToken token = default(CancellationToken))
         {
             var sc = new ByteArrayContent((encoding ?? Encoding.UTF8).GetBytes(text));
             return await createFile(sc, remotePath, overwrite, permissions, token);
@@ -590,10 +593,13 @@ namespace WebHdfs.Core
         /// <param name="remotePath"></param>
         /// <param name="token"></param>
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
-        public async Task<bool> AppendFile(string localFile, string remotePath, CancellationToken token = default(CancellationToken))
+        public async Task<bool> AppendFileAsync(string localFile, string remotePath, CancellationToken token = default(CancellationToken))
         {
-            var sc = new StreamContent(File.OpenRead(localFile));
-            return await appendFile(sc, remotePath, token: token);
+            using (var stream = File.OpenRead(localFile))
+            {
+                var sc = new StreamContent(stream);
+                return await appendFile(sc, remotePath, token: token);
+            }
         }
 
         /// <summary>
@@ -603,7 +609,7 @@ namespace WebHdfs.Core
         /// <param name="remotePath"></param>
         /// <param name="token"></param>
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
-        public async Task<bool> AppendFile(Stream content, string remotePath, CancellationToken token = default(CancellationToken))
+        public async Task<bool> AppendFileAsync(Stream content, string remotePath, CancellationToken token = default(CancellationToken))
         {
             var sc = new StreamContent(content);
             return await appendFile(sc, remotePath, token: token);
@@ -616,7 +622,7 @@ namespace WebHdfs.Core
         /// <param name="remotePath"></param>
         /// <param name="token"></param>
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
-        public async Task<bool> AppendFile(byte[] byteArray, string remotePath, CancellationToken token = default(CancellationToken))
+        public async Task<bool> AppendFileAsync(byte[] byteArray, string remotePath, CancellationToken token = default(CancellationToken))
         {
             var content = new ByteArrayContent(byteArray);
             return await appendFile(content, remotePath,  token: token);
@@ -630,7 +636,7 @@ namespace WebHdfs.Core
         /// <param name="remotePath"></param>
         /// <param name="token"></param>
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
-        public async Task<bool> AppendFile(string text, Encoding encoding, string remotePath, CancellationToken token = default(CancellationToken))
+        public async Task<bool> AppendFileAsync(string text, Encoding encoding, string remotePath, CancellationToken token = default(CancellationToken))
         {
             var content = new ByteArrayContent((encoding ?? Encoding.UTF8).GetBytes(text));
             return await appendFile(content, remotePath, token: token);

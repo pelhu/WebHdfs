@@ -23,7 +23,7 @@ namespace test
 
             var w = GetW();
 
-            w.Rename("/parsedLogs/---1abb0282-ab80-4dd0-b14a-2b280c5d689c", "/parsedLogs/2.txt").Wait();
+            w.RenameAsync("/parsedLogs/---1abb0282-ab80-4dd0-b14a-2b280c5d689c", "/parsedLogs/2.txt").Wait();
 
             Console.ReadKey();
             return;
@@ -59,7 +59,7 @@ namespace test
         {
             var w = GetW();
 
-            var ds = await w.GetDirectoryItems("khamzat_test2");
+            var ds = await w.GetDirectoryItemsAsync("khamzat_test2");
 
             var inputPath = @"c:\!temp\testHdfs\";
 
@@ -72,7 +72,7 @@ namespace test
             {
                 tasks.Add(Task.Run(async () =>
                 {
-                    using (var r = await w.OpenFile("khamzat_test2/" + item.PathSuffix))
+                    using (var r = await w.OpenFileAsync("khamzat_test2/" + item.PathSuffix))
                     {
                         using (var f = File.OpenWrite(Path.Combine(inputPath, item.PathSuffix)))
                         {

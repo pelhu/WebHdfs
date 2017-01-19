@@ -2,11 +2,7 @@
     "version": "1.0.0-*",
     "description": "test Console Application",
     "authors": [ "khamzatsalikhov" ],
-    "tags": [ "" ],
-    "projectUrl": "",
-    "licenseUrl": "",
-
-    "compilationOptions": {
+    "buildOptions": {
         "emitEntryPoint": true
     },
 
@@ -15,9 +11,9 @@
     },
 
     "dependencies": {
-        "Newtonsoft.Json": "8.0.3",
-        "Microsoft.NETCore.Portable.Compatibility": "1.0.1-rc2-23910",
-        "WebHdfs.Core": "0.9.4-rc"
+        "Microsoft.NETCore.Portable.Compatibility": "1.0.1",
+        "WebHdfs.Core": "0.9.5-rc-8",
+        "NETStandard.Library": "1.6.1"
     },
 
     "frameworks": {
@@ -25,9 +21,9 @@
             "dependencies": {
             }
         },
-        "dnxcore50": {
+        "netstandard1.6": {
+            "imports": "dnxcore50",
             "dependencies": {
-                "NETStandard.Library": "1.0.0-rc2-23910"
             }
         }
     }

@@ -6,6 +6,6 @@ FOR %%F IN (src\WebHdfs.Core\bin\Release\WebHdfs.Core.*.symbols.nupkg) DO (
 )
 :_exitfor
 
-c:\!temp\nuget.exe add "%filename%" -Source \\172.17.7.15\Public\NugetPackages
+\\172.17.7.16\Public\NugetPackages\nuget.exe add "%filename%" -Source \\172.17.7.16\Public\NugetPackages
 
 pause
