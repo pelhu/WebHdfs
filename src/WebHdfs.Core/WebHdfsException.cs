@@ -16,7 +16,7 @@ namespace WebHdfs.Core
 
         private string _content;
 
-        public WebHdfsException(HttpResponseMessage response, string message, Exception innerException) : base(message, innerException)
+        public WebHdfsException(HttpResponseMessage response, string message, Exception innerException) : this(message, innerException)
         {
             Response = response;
 
@@ -38,6 +38,16 @@ namespace WebHdfs.Core
 
         public WebHdfsException(HttpResponseMessage response) : this(response, null)
         {
+        }
+
+        public WebHdfsException(string message, Exception innerException) : base(message, innerException)
+        {
+
+        }
+
+        public WebHdfsException()
+        {
+
         }
 
         public override string Message
