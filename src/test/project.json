@@ -12,8 +12,13 @@
 
     "dependencies": {
         "Microsoft.NETCore.Portable.Compatibility": "1.0.1",
-        "WebHdfs.Core": "0.9.5-rc-8",
-        "NETStandard.Library": "1.6.1"
+        "WebHdfs.Core": {
+            "target": "project"
+        },
+        "NETStandard.Library": {
+            "type": "platform",
+            "version": "1.6.1"
+        }
     },
 
     "frameworks": {

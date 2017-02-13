@@ -45,6 +45,13 @@ namespace WebHdfs.Core
         public string Prefix { get; private set; }
 
         public const string DefaultPrefix = "/webhdfs/v1/";
+        string trashFolder
+        {
+            get
+            {
+                return $"/user/{User}/.Trash/Current";
+            }
+        }
 
         const string _defaultPermissions = "755";
         private const int _defaultTimeoutSeconds = 300;
@@ -220,9 +227,9 @@ namespace WebHdfs.Core
         /// </summary>
         /// <param name="remotePath">The string representation a Path.</param>
         /// <returns>Async <see cref="Task{Stream}"/> with file content.</returns>
-        public async Task<Stream> OpenFileAsync(string remotePath)
+        public async Task<Stream> OpenFileReadAsync(string remotePath)
         {
-            return await OpenFileAsync(remotePath, -1, -1, CancellationToken.None);
+            return await OpenFileReadAsync(remotePath, -1, -1, CancellationToken.None);
         }
 
         /// <summary>
@@ -231,9 +238,9 @@ namespace WebHdfs.Core
         /// <param name="remotePath">The string representation a Path.</param>
         /// <param name="token"><see cref="CancellationToken"/> to cancel call if needed.</param>
         /// <returns>Async <see cref="Task{Stream}"/> with file content.</returns>
-        public async Task<Stream> OpenFileAsync(string remotePath, CancellationToken token)
+        public async Task<Stream> OpenFileReadAsync(string remotePath, CancellationToken token)
         {
-            return await OpenFileAsync(remotePath, -1, -1, token);
+            return await OpenFileReadAsync(remotePath, -1, -1, token);
         }
 
         /// <summary>
@@ -245,7 +252,7 @@ namespace WebHdfs.Core
         /// <param name="length">The number of bytes to be processed.</param>
         /// <param name="token"><see cref="CancellationToken"/> to cancel call if needed.</param>
         /// <returns>Async <see cref="Task{Stream}"/> with file content.</returns>
-        public async Task<Stream> OpenFileAsync(string remotePath, int offset = 0, int length = -1, CancellationToken token = default(CancellationToken))
+        public async Task<Stream> OpenFileReadAsync(string remotePath, int offset = 0, int length = -1, CancellationToken token = default(CancellationToken))
         {
             string uri = prepareUrl(remotePath, "OPEN");
             if (offset > 0)
@@ -282,7 +289,7 @@ namespace WebHdfs.Core
                 throw new IOException("Destination file already exists.");
             }
 
-            using (var inputStream = await OpenFileAsync(remotePath))
+            using (var inputStream = await OpenFileReadAsync(remotePath))
             {
                 using (var outputStream = File.OpenWrite(destinationPath))
                 {
@@ -376,9 +383,8 @@ namespace WebHdfs.Core
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
         public async Task<bool> DeleteAsync(string remotePath)
         {
-            return await DeleteAsync(remotePath, false);
+            return await DeleteAsync(remotePath, false, false);
         }
-
 
         /// <summary>
         /// Delete a file
@@ -387,10 +393,17 @@ namespace WebHdfs.Core
         /// <param name="recursive">if path is a directory and set to true, the directory is deleted else throws an exception.
         /// In case of a file the recursive can be set to either true or false. </param>
         /// <returns>Async <see cref="Task{Boolean}"/> with result of operation.</returns>
-        public async Task<bool> DeleteAsync(string remotePath, bool recursive)
+        public async Task<bool> DeleteAsync(string remotePath, bool recursive = false, bool skipTrash = false)
         {
-            var result = await callWebHDFS<BooleanResult>(remotePath, "DELETE", HttpMethod.Delete, additionalQueryParameters: new { recursive = recursive.ToString().ToLower() });
-            return result.Value;
+            if (skipTrash)
+            {
+                return (await callWebHDFS<BooleanResult>(remotePath, "DELETE", HttpMethod.Delete, additionalQueryParameters: new { recursive = recursive.ToString().ToLower() })).Value;
+            }
+            else
+            {
+                await CreateDirectoryAsync(trashFolder);
+                return await RenameAsync(remotePath, trashFolder.AppendPathSegment(Path.GetFileName(remotePath)));
+            }
         }
         #endregion
 
@@ -487,7 +500,7 @@ namespace WebHdfs.Core
             using (var stream = File.OpenRead(localFile))
             {
                 var sc = new StreamContent(stream);
-                return await createFile(sc, remotePath, overwrite, permissions, token); 
+                return await createFile(sc, remotePath, overwrite, permissions, token);
             }
         }
 
@@ -625,7 +638,7 @@ namespace WebHdfs.Core
         public async Task<bool> AppendFileAsync(byte[] byteArray, string remotePath, CancellationToken token = default(CancellationToken))
         {
             var content = new ByteArrayContent(byteArray);
-            return await appendFile(content, remotePath,  token: token);
+            return await appendFile(content, remotePath, token: token);
         }
 
         /// <summary>
@@ -642,7 +655,7 @@ namespace WebHdfs.Core
             return await appendFile(content, remotePath, token: token);
         }
 
-        private async Task<bool> appendFile(HttpContent content, string remotePath,CancellationToken token = default(CancellationToken))
+        private async Task<bool> appendFile(HttpContent content, string remotePath, CancellationToken token = default(CancellationToken))
         {
             var addingUrl = prepareUrl(remotePath, "APPEND");
             var location = await getRedirectLocation(addingUrl, HttpMethod.Post, token);

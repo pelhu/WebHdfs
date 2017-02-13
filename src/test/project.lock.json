@@ -454,7 +454,7 @@
           "lib/net45/_._": {}
         }
       },
-      "WebHdfs.Core/0.9.5-rc-8": {
+      "WebHdfs.Core/0.9.5-rc-13": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.5.1",
         "dependencies": {
@@ -1826,7 +1826,7 @@
           "lib/netstandard1.3/System.Xml.XDocument.dll": {}
         }
       },
-      "WebHdfs.Core/0.9.5-rc-8": {
+      "WebHdfs.Core/0.9.5-rc-13": {
         "type": "project",
         "framework": ".NETStandard,Version=v1.6",
         "dependencies": {
@@ -5515,7 +5515,7 @@
         "ref/xamarinwatchos10/_._"
       ]
     },
-    "WebHdfs.Core/0.9.5-rc-8": {
+    "WebHdfs.Core/0.9.5-rc-13": {
       "type": "project",
       "path": "../WebHdfs.Core/project.json",
       "msbuildProject": "../WebHdfs.Core/WebHdfs.Core.xproj"
@@ -5525,7 +5525,7 @@
     "": [
       "Microsoft.NETCore.Portable.Compatibility >= 1.0.1",
       "NETStandard.Library >= 1.6.1",
-      "WebHdfs.Core >= 0.9.5-rc-8"
+      "WebHdfs.Core"
     ],
     ".NETFramework,Version=v4.5.1": [],
     ".NETStandard,Version=v1.6": []

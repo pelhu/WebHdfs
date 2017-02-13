@@ -23,7 +23,7 @@ namespace test
 
             var w = GetW();
 
-            w.RenameAsync("/parsedLogs/---1abb0282-ab80-4dd0-b14a-2b280c5d689c", "/parsedLogs/2.txt").Wait();
+            w.DeleteAsync("/start-yarn.cmd").Wait();
 
             Console.ReadKey();
             return;
@@ -72,7 +72,7 @@ namespace test
             {
                 tasks.Add(Task.Run(async () =>
                 {
-                    using (var r = await w.OpenFileAsync("khamzat_test2/" + item.PathSuffix))
+                    using (var r = await w.OpenFileReadAsync("khamzat_test2/" + item.PathSuffix))
                     {
                         using (var f = File.OpenWrite(Path.Combine(inputPath, item.PathSuffix)))
                         {
@@ -90,14 +90,14 @@ namespace test
 
         private static WebHdfsClient GetW()
         {
-            return new WebHdfsClient("http://172.17.7.191:50070", "clog");
+            return new WebHdfsClient("http://172.17.6.59:50070", "root");
         }
 
         private async static Task testAppend()
         {
             var w = GetW();
 
-            var ds = await w.GetDirectoryItems("khamzat_test2");
+            var ds = await w.GetDirectoryItemsAsync("khamzat_test2");
 
             var byteArrayLength = 10000000;
 
@@ -106,7 +106,7 @@ namespace test
             sw.Start();
             foreach (var item in ds.Files)
             {
-                tasks.Add(w.AppendFile(new byte[byteArrayLength], "khamzat_test2/" + item.PathSuffix));
+                tasks.Add(w.AppendFileAsync(new byte[byteArrayLength], "khamzat_test2/" + item.PathSuffix));
             }
             Task.WaitAll(tasks.ToArray());
             sw.Stop();
@@ -125,13 +125,13 @@ namespace test
 
             var w = GetW();
 
-            var ds = await w.GetDirectoryItems("khamzat_test2");
+            var ds = await w.GetDirectoryItemsAsync("khamzat_test2");
 
             var fileInfo = new FileInfo(@"c:\!temp\dotnet-apiport-master.rar");
 
             foreach (var item in ds.Files)
             {
-                tasks.Add(w.AppendFile(fileInfo.FullName, "khamzat_test2/" + item.PathSuffix));
+                tasks.Add(w.AppendFileAsync(fileInfo.FullName, "khamzat_test2/" + item.PathSuffix));
             }
             Task.WaitAll(tasks.ToArray());
             sw.Stop();
@@ -148,12 +148,12 @@ namespace test
             
             var fileInfo = new FileInfo(@"c:\!temp\syslog8");
 
-            var ds = await w.GetDirectoryItems("khamzat_test2");
+            var ds = await w.GetDirectoryItemsAsync("khamzat_test2");
             if (ds!=null)
             {
                 foreach (var item in ds.Files.Where(f => f.PathSuffix.StartsWith(fileInfo.Name)))
                 {
-                    await w.Delete("khamzat_test2/" + item.PathSuffix);
+                    await w.DeleteAsync("khamzat_test2/" + item.PathSuffix);
                 }
             }
 
@@ -164,7 +164,7 @@ namespace test
             sw.Start();
             for (int i = 0; i < count; i++)
             {
-                await w.UploadFile(fileInfo.FullName, $"khamzat_test2/{fileInfo.Name}_{(i + 1)}", true);
+                await w.UploadFileAsync(fileInfo.FullName, $"khamzat_test2/{fileInfo.Name}_{(i + 1)}", true);
                 //tasks.Add(w.CreateFile(fileInfo.FullName, $"khamzat_test2/{fileInfo.Name}_{(i + 1)}", true));
 
                 //w.CreateFile(fileInfo.FullName, $"khamzat_test/{fileInfo.Name}_{(i + 1)}", true).ContinueWith(t =>

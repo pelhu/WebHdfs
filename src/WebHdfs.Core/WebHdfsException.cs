@@ -14,22 +14,27 @@ namespace WebHdfs.Core
         /// </summary>
         public HttpResponseMessage Response { get; private set; }
 
-        private string _content;
+        private string _details;
 
         public WebHdfsException(HttpResponseMessage response, string message, Exception innerException) : this(message, innerException)
         {
             Response = response;
 
-            //try get content
-            try
+            if (Response != null)
             {
-                var t = response.Content.ReadAsStringAsync();
-                if (t.Wait(3000))
+                _details = $"Status and Reason : {(int)Response.StatusCode} {Response.ReasonPhrase}{Environment.NewLine}";
+
+                //try get content
+                try
                 {
-                    _content = Regex.Unescape(t.Result);
+                    var t = Response.Content.ReadAsStringAsync();
+                    if (t.Wait(3000))
+                    {
+                        _details += $"Content : {Regex.Unescape(t.Result)}{Environment.NewLine}";
+                    }
                 }
+                catch { }
             }
-            catch { }
         }
 
         public WebHdfsException(HttpResponseMessage response, string message) : this(response, message, null)
@@ -60,14 +65,9 @@ namespace WebHdfs.Core
                     result += base.Message + Environment.NewLine + Environment.NewLine;
                 }
 
-                if (Response != null)
+                if (!string.IsNullOrWhiteSpace(_details))
                 {
-                    result += $"Status and Reason : {Response.StatusCode} {Response.ReasonPhrase}{Environment.NewLine}";
-
-                    if (!string.IsNullOrWhiteSpace(_content))
-                    {
-                        result += $"Content : {_content}{Environment.NewLine}";
-                    }
+                    result += _details;
                 }
 
                 return result;
