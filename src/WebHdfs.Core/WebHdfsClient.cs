@@ -402,7 +402,15 @@ namespace WebHdfs.Core
             else
             {
                 await CreateDirectoryAsync(trashFolder);
-                return await RenameAsync(remotePath, trashFolder.AppendPathSegment(Path.GetFileName(remotePath)));
+                var newName = trashFolder.AppendPathSegment(Path.GetFileName(remotePath));
+                var baseNewName = newName;
+                int c = 2;
+                while (await ExistsAsync(newName))
+                {
+                    newName = trashFolder.AppendPathSegment(Path.GetFileNameWithoutExtension(remotePath) + $"({c})" + Path.GetExtension(remotePath));
+                    c++;
+                }
+                return await RenameAsync(remotePath, newName);
             }
         }
         #endregion

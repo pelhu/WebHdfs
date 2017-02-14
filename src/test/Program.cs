@@ -23,6 +23,9 @@ namespace test
 
             var w = GetW();
 
+            w.CreateFileAsync("test", Encoding.UTF8, "/start-yarn.cmd").Wait();
+            w.DeleteAsync("/start-yarn.cmd").Wait();
+            w.CreateFileAsync("test", Encoding.UTF8, "/start-yarn.cmd").Wait();
             w.DeleteAsync("/start-yarn.cmd").Wait();
 
             Console.ReadKey();

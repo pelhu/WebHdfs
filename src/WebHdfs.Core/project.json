@@ -1,5 +1,5 @@
 {
-    "version": "0.9.5-rc-13",
+    "version": "0.9.5-rc-14",
     "title": "WebHdfs.Core",
     "description": "WebHdfs client for .Net Core. Forked from https://github.com/justmara/WebHdfs",
     "authors": [ "Khamzat Salikhov" ],
