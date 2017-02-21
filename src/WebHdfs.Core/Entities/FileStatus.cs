@@ -51,6 +51,8 @@ namespace WebHdfs.Core.Entities
         public string PathSuffix
         { get; set; }
 
+        public string FullPath { get; set; }
+
         /// <summary>
         /// The permission represented as a octal string.
         /// </summary>

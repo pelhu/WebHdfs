@@ -23,10 +23,12 @@ namespace test
 
             var w = GetW();
 
-            w.CreateFileAsync("test", Encoding.UTF8, "/start-yarn.cmd").Wait();
-            w.DeleteAsync("/start-yarn.cmd").Wait();
-            w.CreateFileAsync("test", Encoding.UTF8, "/start-yarn.cmd").Wait();
-            w.DeleteAsync("/start-yarn.cmd").Wait();
+            //w.CreateFileAsync("test", Encoding.UTF8, "/start-yarn.cmd").Wait();
+            //w.DeleteAsync("/start-yarn.cmd").Wait();
+            //w.CreateFileAsync("test", Encoding.UTF8, "/start-yarn.cmd").Wait();
+            //w.DeleteAsync("/start-yarn.cmd").Wait();
+
+            var ds = w.GetDirectoryItemsAsync("/KASIRGA/prtscn/2017/02/15/s").Result;
 
             Console.ReadKey();
             return;

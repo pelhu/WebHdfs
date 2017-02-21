@@ -130,7 +130,9 @@ namespace WebHdfs.Core
         {
             try
             {
-                return await callWebHDFS<DirectoryItems>(remotePath, "LISTSTATUS", HttpMethod.Get);
+                var result = await callWebHDFS<DirectoryItems>(remotePath, "LISTSTATUS", HttpMethod.Get);
+                result.SetDirectoryPath(remotePath);
+                return result;
             }
             catch (WebHdfsException ex) when (ex.Response?.StatusCode == System.Net.HttpStatusCode.NotFound)
             {

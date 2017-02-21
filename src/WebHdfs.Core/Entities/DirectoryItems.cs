@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System;
+using Flurl;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 
@@ -13,6 +14,20 @@ namespace WebHdfs.Core.Entities
     {
         IEnumerable<FileStatus> directoryEntries;
 
+        public string DirectoryPath { get; private set; }
+
+        internal void SetDirectoryPath(string path)
+        {
+            this.DirectoryPath = path;
+            if (directoryEntries != null)
+            {
+                foreach (var item in directoryEntries)
+                {
+                    item.FullPath = DirectoryPath.AppendPathSegment(item.PathSuffix);
+                }
+            }
+        }
+
         /// <inheritdoc />
         public void Parse(JObject rootEntry)
         {
@@ -21,7 +36,7 @@ namespace WebHdfs.Core.Entities
                 var d = new FileStatus();
                 d.Parse(fs.Value<JObject>());
                 return d;
-            });
+            }).ToList();
         }
 
         /// <summary>
