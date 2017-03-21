@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>WebHdfs client for .Net Core. Forked from https://github.com/justmara/WebHdfs</Description>
+    <Copyright>Crypttech 2016</Copyright>
+    <AssemblyTitle>WebHdfs.Core</AssemblyTitle>
+    <VersionPrefix>0.9.5-rc-17</VersionPrefix>
+    <Authors>Khamzat Salikhov</Authors>
+    <TargetFrameworks>net451;netstandard1.6</TargetFrameworks>
+    <AssemblyName>WebHdfs.Core</AssemblyName>
+    <PackageId>WebHdfs.Core</PackageId>
+    <PackageTags>Hadoop;Hdfs;WebHdfs;.Net;Core</PackageTags>
+    <PackageReleaseNotes>Upgrade Flurl to v2</PackageReleaseNotes>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/pelhu/WebHdfs.Core</RepositoryUrl>
+    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
+    <PackageTargetFallback Condition=" '$(TargetFramework)' == 'netstandard1.6' ">$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Flurl" Version="2.3.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.1" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net451' ">
+    <PackageReference Include="Microsoft.Net.Http" Version="2.2.29" />
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
+</Project>

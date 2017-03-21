@@ -1,19 +1,18 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.26228.9
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{3EF13F57-0339-404F-89E4-FFD1583C4E16}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4510AB02-A8F5-4AD9-9908-1F3259EDA27A}"
 	ProjectSection(SolutionItems) = preProject
-		global.json = global.json
 		publishPackage.bat = publishPackage.bat
 	EndProjectSection
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "test", "src\test\test.xproj", "{037094BC-1D44-4DA3-9B7A-258DC7D128D0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "test", "src\test\test.csproj", "{037094BC-1D44-4DA3-9B7A-258DC7D128D0}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "WebHdfs.Core", "src\WebHdfs.Core\WebHdfs.Core.xproj", "{895EA6CC-FF75-445B-B0C9-5F7A08BD7434}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebHdfs.Core", "src\WebHdfs.Core\WebHdfs.Core.csproj", "{895EA6CC-FF75-445B-B0C9-5F7A08BD7434}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
